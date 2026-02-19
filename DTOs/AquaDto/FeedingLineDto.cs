@@ -1,0 +1,30 @@
+using System;
+using aqua_api.Models;
+
+namespace aqua_api.DTOs
+{
+    public class FeedingLineDto
+    {
+        public long Id { get; set; }
+        public long FeedingId { get; set; }
+        public long StockId { get; set; }
+        public decimal QtyUnit { get; set; }
+        public decimal GramPerUnit { get; set; }
+        public decimal TotalGram { get; set; }
+        public Stock? Stock { get; set; }
+    }
+
+    public class CreateFeedingLineDto
+    {
+        public long FeedingId { get; set; }
+        public long StockId { get; set; }
+        public decimal QtyUnit { get; set; }
+        public decimal GramPerUnit { get; set; }
+        public decimal TotalGram { get; set; }
+        public Stock? Stock { get; set; }
+    }
+
+    public class UpdateFeedingLineDto : CreateFeedingLineDto
+    {
+    }
+}

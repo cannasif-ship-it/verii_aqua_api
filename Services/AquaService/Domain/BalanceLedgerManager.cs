@@ -1,0 +1,102 @@
+using aqua_api.Interfaces;
+using aqua_api.Models;
+using aqua_api.UnitOfWork;
+using Microsoft.EntityFrameworkCore;
+
+namespace aqua_api.Services
+{
+    public class BalanceLedgerManager : IBalanceLedgerManager
+    {
+        private readonly IUnitOfWork _uow;
+
+        public BalanceLedgerManager(IUnitOfWork uow)
+        {
+            _uow = uow;
+        }
+
+        public async Task ApplyDelta(
+            long projectId,
+            long fishBatchId,
+            long projectCageId,
+            int deltaCount,
+            decimal? deltaBiomassGram,
+            BatchMovementType movementType,
+            DateTime movementDate,
+            string description,
+            string refTable,
+            long refId,
+            long? fromCageId,
+            long? toCageId,
+            long? fromStockId,
+            long? toStockId,
+            decimal? fromAvgGram,
+            decimal? toAvgGram)
+        {
+            var balance = await _uow.Db.BatchCageBalances
+                .FirstOrDefaultAsync(x => x.FishBatchId == fishBatchId && x.ProjectCageId == projectCageId && !x.IsDeleted);
+
+            if (balance == null)
+            {
+                balance = new BatchCageBalance
+                {
+                    FishBatchId = fishBatchId,
+                    ProjectCageId = projectCageId,
+                    LiveCount = 0,
+                    AverageGram = 0,
+                    BiomassGram = 0,
+                    AsOfDate = movementDate,
+                    IsDeleted = false
+                };
+
+                await _uow.Db.BatchCageBalances.AddAsync(balance);
+            }
+
+            var biomassDelta = deltaBiomassGram ?? 0m;
+            var nextCount = balance.LiveCount + deltaCount;
+            var nextBiomass = balance.BiomassGram + biomassDelta;
+
+            if (nextCount < 0)
+            {
+                throw new InvalidOperationException("Batch cage balance cannot go below zero count.");
+            }
+
+            if (nextBiomass < 0)
+            {
+                throw new InvalidOperationException("Batch cage balance cannot go below zero biomass.");
+            }
+
+            balance.LiveCount = nextCount;
+            balance.BiomassGram = nextBiomass;
+            balance.AverageGram = nextCount > 0
+                ? Math.Round(nextBiomass / nextCount, 3, MidpointRounding.AwayFromZero)
+                : 0m;
+            balance.AsOfDate = movementDate;
+
+            var noteParts = new List<string>
+            {
+                description,
+                $"projectId={projectId}",
+                $"fromCage={fromCageId?.ToString() ?? "null"}",
+                $"toCage={toCageId?.ToString() ?? "null"}",
+                $"fromStock={fromStockId?.ToString() ?? "null"}",
+                $"toStock={toStockId?.ToString() ?? "null"}",
+                $"fromAvg={fromAvgGram?.ToString("0.###") ?? "null"}",
+                $"toAvg={toAvgGram?.ToString("0.###") ?? "null"}"
+            };
+
+            await _uow.Db.BatchMovements.AddAsync(new BatchMovement
+            {
+                FishBatchId = fishBatchId,
+                ProjectCageId = projectCageId,
+                MovementDate = movementDate,
+                MovementType = movementType,
+                SignedCount = deltaCount,
+                SignedBiomassGram = biomassDelta,
+                ReferenceTable = refTable,
+                ReferenceId = refId,
+                Note = string.Join(" | ", noteParts),
+                IsDeleted = false
+            });
+        }
+    }
+}
