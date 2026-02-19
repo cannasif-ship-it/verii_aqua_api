@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace crm_api.Hubs
+namespace aqua_api.Hubs
 {
     [Authorize]
     public class NotificationHub : Hub

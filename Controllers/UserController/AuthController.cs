@@ -2,11 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using crm_api.Hubs;
-using crm_api.Interfaces;
-using crm_api.DTOs;
+using aqua_api.Hubs;
+using aqua_api.Interfaces;
+using aqua_api.DTOs;
 
-namespace crm_api.Controllers
+namespace aqua_api.Controllers
 {
     [ApiController]
     [Route("api/auth")]

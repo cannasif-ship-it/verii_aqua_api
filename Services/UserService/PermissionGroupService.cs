@@ -1,11 +1,11 @@
-using crm_api.DTOs;
-using crm_api.Helpers;
-using crm_api.Interfaces;
-using crm_api.Models.UserPermissions;
-using crm_api.UnitOfWork;
+using aqua_api.DTOs;
+using aqua_api.Helpers;
+using aqua_api.Interfaces;
+using aqua_api.Models.UserPermissions;
+using aqua_api.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class PermissionGroupService : IPermissionGroupService
     {

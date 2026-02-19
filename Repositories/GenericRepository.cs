@@ -1,20 +1,20 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using crm_api.Data;
-using crm_api.Interfaces;
-using crm_api.Models;
+using aqua_api.Data;
+using aqua_api.Interfaces;
+using aqua_api.Models;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
-namespace crm_api.Repositories
+namespace aqua_api.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        protected readonly CmsDbContext _context;
+        protected readonly AquaDbContext _context;
         protected readonly DbSet<T> _dbSet;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public GenericRepository(CmsDbContext context, IHttpContextAccessor httpContextAccessor)
+        public GenericRepository(AquaDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _dbSet = context.Set<T>();

@@ -1,27 +1,27 @@
 using AutoMapper;
-using crm_api.Data;
-using crm_api.DTOs;
-using crm_api.DTOs.ErpDto;
-using crm_api.Interfaces;
-using crm_api.UnitOfWork;
+using aqua_api.Data;
+using aqua_api.DTOs;
+using aqua_api.DTOs.ErpDto;
+using aqua_api.Interfaces;
+using aqua_api.UnitOfWork;
 using depoWebAPI.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Globalization;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class ErpService : IErpService
     {
-        private readonly ErpCmsDbContext _erpContext;
-        private readonly CmsDbContext _cmsContext;
+        private readonly ErpAquaDbContext _erpContext;
+        private readonly AquaDbContext _cmsContext;
         private readonly ILogger<ErpService> _logger;
         private readonly ILocalizationService _localizationService;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ErpService(ErpCmsDbContext erpContext, CmsDbContext cmsContext, ILogger<ErpService> logger, ILocalizationService localizationService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        public ErpService(ErpAquaDbContext erpContext, AquaDbContext cmsContext, ILogger<ErpService> logger, ILocalizationService localizationService, IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
             _erpContext = erpContext;
             _cmsContext = cmsContext;

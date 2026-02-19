@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using crm_api.Models;
+using aqua_api.Models;
 
-namespace crm_api.Data.Configurations
+namespace aqua_api.Data.Configurations
 {
     public class UserConfiguration : BaseEntityConfiguration<User>
     {

@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using crm_api.DTOs;
-using crm_api.Interfaces;
+using aqua_api.DTOs;
+using aqua_api.Interfaces;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class FileUploadService : IFileUploadService
     {

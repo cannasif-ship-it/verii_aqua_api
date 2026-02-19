@@ -1,6 +1,6 @@
 using Hangfire;
 using Infrastructure.BackgroundJobs.Interfaces;
-using crm_api.Interfaces;
+using aqua_api.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 

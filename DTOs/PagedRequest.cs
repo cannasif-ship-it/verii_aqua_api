@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using crm_api.Infrastructure.ModelBinding;
+using aqua_api.Infrastructure.ModelBinding;
 using Microsoft.AspNetCore.Mvc;
 
-namespace crm_api.DTOs
+namespace aqua_api.DTOs
 {
     public class Filter
     {

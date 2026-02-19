@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     public static class DbUpdateExceptionHelper
     {

@@ -1,8 +1,8 @@
 using AutoMapper;
 using depoWebAPI.Models;
-using crm_api.DTOs.ErpDto;
+using aqua_api.DTOs.ErpDto;
 
-namespace crm_api.Mappings
+namespace aqua_api.Mappings
 {
     public class ErpMappingProfile : Profile
     {

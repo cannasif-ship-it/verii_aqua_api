@@ -1,14 +1,14 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using crm_api.DTOs;
-using crm_api.Interfaces;
-using crm_api.Models;
-using crm_api.UnitOfWork;
-using crm_api.Helpers;
+using aqua_api.DTOs;
+using aqua_api.Interfaces;
+using aqua_api.Models;
+using aqua_api.UnitOfWork;
+using aqua_api.Helpers;
 using System;
 using System.Collections.Generic;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class UserAuthorityService : IUserAuthorityService
     {

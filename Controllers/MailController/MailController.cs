@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using crm_api.DTOs;
-using crm_api.DTOs.MailDto;
-using crm_api.Interfaces;
-using crm_api.UnitOfWork;
+using aqua_api.DTOs;
+using aqua_api.DTOs.MailDto;
+using aqua_api.Interfaces;
+using aqua_api.UnitOfWork;
 using Hangfire;
 using Infrastructure.BackgroundJobs.Interfaces;
 using System.Security.Cryptography;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 
-namespace crm_api.Controllers
+namespace aqua_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

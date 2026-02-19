@@ -4,7 +4,7 @@ using Hangfire.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace crm_api.Controllers
+namespace aqua_api.Controllers
 {
     [ApiController]
     [Route("api/hangfire")]

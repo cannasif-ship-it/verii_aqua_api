@@ -2,12 +2,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using crm_api.Models;
-using crm_api.Interfaces;
-using crm_api.DTOs;
-using crm_api.UnitOfWork;
+using aqua_api.Models;
+using aqua_api.Interfaces;
+using aqua_api.DTOs;
+using aqua_api.UnitOfWork;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class JwtService : IJwtService
     {

@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using depoWebAPI.Models;
 
-namespace crm_api.Data
+namespace aqua_api.Data
 {
     /// <summary>
     /// ERP veritabanı bağlantısı için DbContext
     /// SQL View'lar ve Function'lar için kullanılır
     /// </summary>
-    public class ErpCmsDbContext : DbContext
+    public class ErpAquaDbContext : DbContext
     {
-        public ErpCmsDbContext(DbContextOptions<ErpCmsDbContext> options) : base(options)
+        public ErpAquaDbContext(DbContextOptions<ErpAquaDbContext> options) : base(options)
         {
         }
 

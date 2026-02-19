@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace crm_api.Infrastructure
+namespace aqua_api.Infrastructure
 {
     /// <summary>
     /// Adds deprecation headers to API responses. Use on legacy controllers.

@@ -1,4 +1,4 @@
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     public class HangfireMonitoringOptions
     {

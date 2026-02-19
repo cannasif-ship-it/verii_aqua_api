@@ -1,16 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using System.Text;
-using crm_api.DTOs;
-using crm_api.Models;
-using crm_api.Interfaces;
-using crm_api.UnitOfWork;
-using crm_api.Hubs;
+using aqua_api.DTOs;
+using aqua_api.Models;
+using aqua_api.Interfaces;
+using aqua_api.UnitOfWork;
+using aqua_api.Hubs;
 using Hangfire;
 using Infrastructure.BackgroundJobs.Interfaces;
 using Microsoft.Extensions.Configuration;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class AuthService : IAuthService
     {

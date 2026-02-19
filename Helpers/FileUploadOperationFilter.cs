@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     /// <summary>
     /// Parameter filter to handle [FromForm] IFormFile parameters

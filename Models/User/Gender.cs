@@ -1,4 +1,4 @@
-namespace crm_api.Models
+namespace aqua_api.Models
 {
     /// <summary>
     /// Gender enum for user details

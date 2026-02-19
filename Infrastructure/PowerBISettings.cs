@@ -1,4 +1,4 @@
-namespace crm_api.Infrastructure
+namespace aqua_api.Infrastructure
 {
     /// <summary>
     /// Power BI API and embed configuration.

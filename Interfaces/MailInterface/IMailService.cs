@@ -1,4 +1,4 @@
-namespace crm_api.Interfaces
+namespace aqua_api.Interfaces
 {
     public interface IMailService
     {

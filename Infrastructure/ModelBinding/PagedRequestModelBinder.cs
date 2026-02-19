@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using crm_api.DTOs;
+using aqua_api.DTOs;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Primitives;
 
-namespace crm_api.Infrastructure.ModelBinding
+namespace aqua_api.Infrastructure.ModelBinding
 {
     public class PagedRequestModelBinder : IModelBinder
     {

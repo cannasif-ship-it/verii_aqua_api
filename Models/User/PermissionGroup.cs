@@ -1,6 +1,6 @@
-using crm_api.Models;
+using aqua_api.Models;
 
-namespace crm_api.Models.UserPermissions
+namespace aqua_api.Models.UserPermissions
 {
     public class PermissionGroup : BaseEntity
     {

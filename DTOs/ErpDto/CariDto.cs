@@ -1,4 +1,4 @@
-namespace crm_api.DTOs.ErpDto
+namespace aqua_api.DTOs.ErpDto
 {
     public class CariDto
     {

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Localization;
 using System;
 using System.Linq;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     /// <summary>
     /// Custom culture provider that reads language from "x-language" header.

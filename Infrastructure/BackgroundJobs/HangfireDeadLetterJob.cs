@@ -1,7 +1,7 @@
 using Hangfire;
 using Infrastructure.BackgroundJobs.Interfaces;
-using crm_api.Helpers;
-using crm_api.Interfaces;
+using aqua_api.Helpers;
+using aqua_api.Interfaces;
 using Microsoft.Extensions.Options;
 
 namespace Infrastructure.BackgroundJobs

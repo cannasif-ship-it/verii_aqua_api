@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
-using crm_api.Interfaces;
-using crm_api.DTOs;
-using crm_api.DTOs.ErpDto;
+using aqua_api.Interfaces;
+using aqua_api.DTOs;
+using aqua_api.DTOs.ErpDto;
 using Microsoft.AspNetCore.Authorization;
 
-namespace crm_api.Controllers
+namespace aqua_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

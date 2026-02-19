@@ -1,11 +1,14 @@
-using crm_api.Models;
-using crm_api.Models.UserPermissions;
-using crm_api.Repositories;
+using aqua_api.Data;
+using aqua_api.Models;
+using aqua_api.Models.UserPermissions;
+using aqua_api.Repositories;
 
-namespace crm_api.UnitOfWork
+namespace aqua_api.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
+        AquaDbContext Db { get; }
+
         IGenericRepository<User> Users { get; }
         IGenericRepository<UserAuthority> UserAuthorities { get; }
         IGenericRepository<UserDetail> UserDetails { get; }
@@ -20,6 +23,11 @@ namespace crm_api.UnitOfWork
         IGenericRepository<PermissionGroup> PermissionGroups { get; }
         IGenericRepository<PermissionGroupPermission> PermissionGroupPermissions { get; }
         IGenericRepository<UserPermissionGroup> UserPermissionGroups { get; }
+
+        Task<int> SaveChanges();
+        Task BeginTransaction();
+        Task Commit();
+        Task Rollback();
 
         Task<int> SaveChangesAsync();
         Task BeginTransactionAsync();

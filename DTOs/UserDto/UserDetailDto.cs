@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using crm_api.Models;
+using aqua_api.Models;
 
-namespace crm_api.DTOs
+namespace aqua_api.DTOs
 {
     public class UserDetailDto : BaseEntityDto
     {

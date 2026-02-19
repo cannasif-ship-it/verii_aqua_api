@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace crm_api.DTOs.MailDto
+namespace aqua_api.DTOs.MailDto
 {
     public class SendTestMailDto
     {

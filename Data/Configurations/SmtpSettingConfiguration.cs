@@ -1,8 +1,8 @@
-using crm_api.Models;
+using aqua_api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace crm_api.Persistence.Configurations
+namespace aqua_api.Persistence.Configurations
 {
     public class SmtpSettingConfiguration : IEntityTypeConfiguration<SmtpSetting>
     {

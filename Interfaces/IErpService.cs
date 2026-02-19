@@ -1,9 +1,9 @@
 using depoWebAPI.Models;
-using crm_api.DTOs;
-using crm_api.DTOs.ErpDto;
-using crm_api.Data;
+using aqua_api.DTOs;
+using aqua_api.DTOs.ErpDto;
+using aqua_api.Data;
 
-namespace crm_api.Interfaces
+namespace aqua_api.Interfaces
 {
     public interface IErpService
     {

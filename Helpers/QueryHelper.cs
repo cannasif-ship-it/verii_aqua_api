@@ -3,9 +3,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Collections.Generic;
-using crm_api.DTOs;
+using aqua_api.DTOs;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     public static class QueryHelper
     {

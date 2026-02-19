@@ -1,7 +1,7 @@
-using crm_api.DTOs;
+using aqua_api.DTOs;
 using Microsoft.AspNetCore.Http;
 
-namespace crm_api.Interfaces
+namespace aqua_api.Interfaces
 {
     public interface IFileUploadService
     {

@@ -1,20 +1,20 @@
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
-using crm_api.Data;
+using aqua_api.Data;
 using Microsoft.EntityFrameworkCore;
-using crm_api.Models;
+using aqua_api.Models;
 
-namespace crm_api.Hubs
+namespace aqua_api.Hubs
 {
     [Authorize]
     public class AuthHub : Hub
     {
-        private readonly CmsDbContext _context;
+        private readonly AquaDbContext _context;
         private static readonly Dictionary<string, string> _userConnections = new();
         private static readonly Dictionary<string, string> _connectionUsers = new();
 
-        public AuthHub(CmsDbContext context)
+        public AuthHub(AquaDbContext context)
         {
             _context = context;
         }

@@ -1,8 +1,8 @@
 using AutoMapper;
-using crm_api.Models;
-using crm_api.DTOs;
+using aqua_api.Models;
+using aqua_api.DTOs;
 
-namespace crm_api.Mappings
+namespace aqua_api.Mappings
 {
     public class StockRelationMappingProfile : Profile
     {

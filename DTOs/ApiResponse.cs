@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace crm_api.DTOs
+namespace aqua_api.DTOs
 {
     public class ApiResponse<T>
     {

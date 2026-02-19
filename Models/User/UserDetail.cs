@@ -1,5 +1,5 @@
 using System;
-namespace crm_api.Models
+namespace aqua_api.Models
 {
     public class UserDetail : BaseEntity
     {

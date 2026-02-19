@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 
-namespace crm_api.Infrastructure
+namespace aqua_api.Infrastructure
 {
     /// <summary>
     /// Validates image URLs for PDF generation to prevent SSRF (localhost, private IPs; optional allowlist).

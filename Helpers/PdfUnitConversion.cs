@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     /// <summary>
     /// Single place for PDF unit conversion (e.g. px to pt for 96 DPI to 72 DPI).

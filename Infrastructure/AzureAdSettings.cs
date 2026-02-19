@@ -1,4 +1,4 @@
-namespace crm_api.Infrastructure
+namespace aqua_api.Infrastructure
 {
     /// <summary>
     /// Azure AD app registration (service principal) for Client Credentials flow.

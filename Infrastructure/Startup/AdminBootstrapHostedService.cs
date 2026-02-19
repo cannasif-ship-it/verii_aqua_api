@@ -1,8 +1,8 @@
-using crm_api.Data;
-using crm_api.Models;
+using aqua_api.Data;
+using aqua_api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace crm_api.Infrastructure.Startup
+namespace aqua_api.Infrastructure.Startup
 {
     public class AdminBootstrapHostedService : IHostedService
     {
@@ -46,7 +46,7 @@ namespace crm_api.Infrastructure.Startup
             }
 
             await using var scope = _serviceProvider.CreateAsyncScope();
-            var db = scope.ServiceProvider.GetRequiredService<CmsDbContext>();
+            var db = scope.ServiceProvider.GetRequiredService<AquaDbContext>();
 
             var roleId = 3L;
             var roleIdStr = _configuration["BootstrapAdmin:RoleId"];

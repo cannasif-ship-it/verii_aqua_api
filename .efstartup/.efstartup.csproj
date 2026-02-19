@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\crm_api.csproj" />
+    <ProjectReference Include="..\aqua_api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

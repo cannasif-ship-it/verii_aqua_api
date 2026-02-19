@@ -8,21 +8,21 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Diagnostics;
-using crm_api.Data;
-using crm_api.Interfaces;
-using crm_api.Mappings;
-using crm_api.Repositories;
-using crm_api.Services;
-using crm_api.UnitOfWork;
-using crm_api.Hubs;
-using crm_api.Helpers;
+using aqua_api.Data;
+using aqua_api.Interfaces;
+using aqua_api.Mappings;
+using aqua_api.Repositories;
+using aqua_api.Services;
+using aqua_api.UnitOfWork;
+using aqua_api.Hubs;
+using aqua_api.Helpers;
 using System.Security.Claims;
 using System.IO;
 using Microsoft.Extensions.FileProviders;
 using Hangfire;
 using Hangfire.SqlServer;
 using Infrastructure.BackgroundJobs.Interfaces;
-using crm_api.Infrastructure.Startup;
+using aqua_api.Infrastructure.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,9 +41,9 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.ApiBehaviorOptions>(options 
 {
     options.InvalidModelStateResponseFactory = context =>
     {
-        var localization = context.HttpContext.RequestServices.GetRequiredService<crm_api.Interfaces.ILocalizationService>();
+        var localization = context.HttpContext.RequestServices.GetRequiredService<aqua_api.Interfaces.ILocalizationService>();
         var errors = context.ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-        var response = crm_api.DTOs.ApiResponse<object>.ErrorResult(
+        var response = aqua_api.DTOs.ApiResponse<object>.ErrorResult(
             localization.GetLocalizedString("General.ValidationError"),
             localization.GetLocalizedString("General.ValidationError"),
             StatusCodes.Status400BadRequest);
@@ -70,7 +70,7 @@ builder.Services.AddSignalR(options =>
 });
 
 // Entity Framework Configuration - Using SQL Server
-builder.Services.AddDbContext<CmsDbContext>(options =>
+builder.Services.AddDbContext<AquaDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
     options.UseSqlServer(connectionString, sqlOptions =>
@@ -113,7 +113,7 @@ builder.Services.AddHangfireServer(options =>
 builder.Services.AddHostedService<AdminBootstrapHostedService>();
 
 // ERP Database Configuration - Using SQL Server
-builder.Services.AddDbContext<ErpCmsDbContext>(options =>
+builder.Services.AddDbContext<ErpAquaDbContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("ErpConnection");
     options.UseSqlServer(connectionString, sqlOptions =>
@@ -126,8 +126,15 @@ builder.Services.AddDbContext<ErpCmsDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 // Register Core Services
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, EfUnitOfWork>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IBalanceLedgerManager, BalanceLedgerManager>();
+builder.Services.AddScoped<ITransferRepository, TransferRepository>();
+builder.Services.AddScoped<IMortalityRepository, MortalityRepository>();
+builder.Services.AddScoped<IWeighingRepository, WeighingRepository>();
+builder.Services.AddScoped<IStockConvertRepository, StockConvertRepository>();
+builder.Services.AddScoped<INetOperationRepository, NetOperationRepository>();
+builder.Services.AddScoped<IDailyWeatherRepository, DailyWeatherRepository>();
 
 // Register Authentication & Authorization Services
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -153,6 +160,34 @@ builder.Services.AddScoped<IStockService, StockService>();
 builder.Services.AddScoped<IStockDetailService, StockDetailService>();
 builder.Services.AddScoped<IStockImageService, StockImageService>();
 builder.Services.AddScoped<IStockRelationService, StockRelationService>();
+
+// Register Aqua Entity Services
+builder.Services.AddScoped<IBatchCageBalanceService, BatchCageBalanceService>();
+builder.Services.AddScoped<IBatchMovementService, BatchMovementService>();
+builder.Services.AddScoped<ICageService, CageService>();
+builder.Services.AddScoped<IDailyWeatherService, DailyWeatherService>();
+builder.Services.AddScoped<IFeedingService, FeedingService>();
+builder.Services.AddScoped<IFeedingDistributionService, FeedingDistributionService>();
+builder.Services.AddScoped<IFeedingLineService, FeedingLineService>();
+builder.Services.AddScoped<IFishBatchService, FishBatchService>();
+builder.Services.AddScoped<IGoodsReceiptService, GoodsReceiptService>();
+builder.Services.AddScoped<IGoodsReceiptFishDistributionService, GoodsReceiptFishDistributionService>();
+builder.Services.AddScoped<IGoodsReceiptLineService, GoodsReceiptLineService>();
+builder.Services.AddScoped<IMortalityService, MortalityService>();
+builder.Services.AddScoped<IMortalityLineService, MortalityLineService>();
+builder.Services.AddScoped<INetOperationService, NetOperationService>();
+builder.Services.AddScoped<INetOperationLineService, NetOperationLineService>();
+builder.Services.AddScoped<INetOperationTypeService, NetOperationTypeService>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+builder.Services.AddScoped<IProjectCageService, ProjectCageService>();
+builder.Services.AddScoped<IStockConvertService, StockConvertService>();
+builder.Services.AddScoped<IStockConvertLineService, StockConvertLineService>();
+builder.Services.AddScoped<ITransferService, TransferService>();
+builder.Services.AddScoped<ITransferLineService, TransferLineService>();
+builder.Services.AddScoped<IWeatherSeverityService, WeatherSeverityService>();
+builder.Services.AddScoped<IWeatherTypeService, WeatherTypeService>();
+builder.Services.AddScoped<IWeighingService, WeighingService>();
+builder.Services.AddScoped<IWeighingLineService, WeighingLineService>();
 
 // Register Mail Services
 builder.Services.AddScoped<IMailService, MailService>();
@@ -265,7 +300,7 @@ builder.Services.AddAuthentication(options =>
         },
         OnTokenValidated = async context =>
         {
-            var db = context.HttpContext.RequestServices.GetRequiredService<CmsDbContext>();
+            var db = context.HttpContext.RequestServices.GetRequiredService<AquaDbContext>();
             var claims = context.Principal?.Claims;
             var userId = claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
@@ -475,7 +510,7 @@ app.UseExceptionHandler(errApp =>
                 : (localizationService?.GetLocalizedString("General.RecordAlreadyExists")
                    ?? "This record already exists.");
 
-            var response = crm_api.DTOs.ApiResponse<object>.ErrorResult(
+            var response = aqua_api.DTOs.ApiResponse<object>.ErrorResult(
                 localizedMessage,
                 null,
                 StatusCodes.Status409Conflict);
@@ -577,7 +612,7 @@ app.UseAuthorization();
 
 // Endpoint mapping
 app.MapHub<AuthHub>("/authHub");
-app.MapHub<crm_api.Hubs.NotificationHub>("/notificationHub");
+app.MapHub<aqua_api.Hubs.NotificationHub>("/notificationHub");
 app.MapControllers();
 
 // Hangfire Dashboard

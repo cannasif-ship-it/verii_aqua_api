@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     /// <summary>
     /// Central JSON serializer options for PDF report template data (camelCase, consistent with frontend).

@@ -1,9 +1,9 @@
 using System.Net;
 using System.Net.Mail;
-using crm_api.Interfaces;
+using aqua_api.Interfaces;
 using Microsoft.Extensions.Logging;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class MailService : IMailService
     {

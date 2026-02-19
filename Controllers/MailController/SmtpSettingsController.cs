@@ -1,12 +1,12 @@
-using crm_api.DTOs;
-using crm_api.Interfaces;
+using aqua_api.DTOs;
+using aqua_api.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace crm_api.Controllers
+namespace aqua_api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

@@ -1,9 +1,9 @@
-using crm_api.Models.UserPermissions;
+using aqua_api.Models.UserPermissions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 
-namespace crm_api.Data.Configurations.UserPermissionConfiguration
+namespace aqua_api.Data.Configurations.UserPermissionConfiguration
 {
     public class UserPermissionGroupConfiguration : BaseEntityConfiguration<UserPermissionGroup>
     {

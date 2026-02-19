@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Security.Claims;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
     {

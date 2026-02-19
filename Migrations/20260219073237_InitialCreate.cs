@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace crm_api.Migrations
+namespace aqua_api.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

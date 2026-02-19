@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Linq.Expressions;
-using crm_api.Models;
+using aqua_api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace crm_api.Repositories
+namespace aqua_api.Repositories
 {
     public interface IGenericRepository<T> where T : BaseEntity
     {

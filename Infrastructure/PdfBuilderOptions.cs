@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace crm_api.Infrastructure
+namespace aqua_api.Infrastructure
 {
     /// <summary>
     /// Options for PDF builder: image URL allowlist (SSRF), timeouts, max size.

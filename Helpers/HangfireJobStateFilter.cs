@@ -6,7 +6,7 @@ using Infrastructure.BackgroundJobs.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     public class HangfireJobStateFilter : IApplyStateFilter
     {

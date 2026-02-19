@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using crm_api.Data;
+using aqua_api.Data;
 
 #nullable disable
 
-namespace crm_api.Migrations
+namespace aqua_api.Migrations
 {
-    [DbContext(typeof(CmsDbContext))]
+    [DbContext(typeof(AquaDbContext))]
     [Migration("20260219073237_InitialCreate")]
     partial class InitialCreate
     {
@@ -25,7 +25,7 @@ namespace crm_api.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("crm_api.Models.PasswordResetRequest", b =>
+            modelBuilder.Entity("aqua_api.Models.PasswordResetRequest", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -83,7 +83,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_PASSWORD_RESET_REQUEST", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.SmtpSetting", b =>
+            modelBuilder.Entity("aqua_api.Models.SmtpSetting", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -166,7 +166,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_SMTP_SETTING", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.Stock", b =>
+            modelBuilder.Entity("aqua_api.Models.Stock", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -288,7 +288,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_STOCK", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.StockDetail", b =>
+            modelBuilder.Entity("aqua_api.Models.StockDetail", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -347,7 +347,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_STOCK_DETAIL", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.StockImage", b =>
+            modelBuilder.Entity("aqua_api.Models.StockImage", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -417,7 +417,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_STOCK_IMAGE", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.StockRelation", b =>
+            modelBuilder.Entity("aqua_api.Models.StockRelation", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -489,7 +489,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_STOCK_RELATION", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.User", b =>
+            modelBuilder.Entity("aqua_api.Models.User", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -594,7 +594,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_USERS", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserAuthority", b =>
+            modelBuilder.Entity("aqua_api.Models.UserAuthority", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -671,7 +671,7 @@ namespace crm_api.Migrations
                         });
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserDetail", b =>
+            modelBuilder.Entity("aqua_api.Models.UserDetail", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -740,7 +740,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_USER_DETAIL", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionDefinition", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionDefinition", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -855,7 +855,7 @@ namespace crm_api.Migrations
                         });
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionGroup", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionGroup", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -935,7 +935,7 @@ namespace crm_api.Migrations
                         });
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionGroupPermission", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionGroupPermission", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -992,7 +992,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_PERMISSION_GROUP_PERMISSIONS", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.UserPermissionGroup", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.UserPermissionGroup", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -1049,7 +1049,7 @@ namespace crm_api.Migrations
                     b.ToTable("RII_USER_PERMISSION_GROUPS", (string)null);
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserSession", b =>
+            modelBuilder.Entity("aqua_api.Models.UserSession", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -1268,24 +1268,24 @@ namespace crm_api.Migrations
                     b.ToFunction("RII_STGROUP");
                 });
 
-            modelBuilder.Entity("crm_api.Models.PasswordResetRequest", b =>
+            modelBuilder.Entity("aqua_api.Models.PasswordResetRequest", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "User")
+                    b.HasOne("aqua_api.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1300,17 +1300,17 @@ namespace crm_api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("crm_api.Models.SmtpSetting", b =>
+            modelBuilder.Entity("aqua_api.Models.SmtpSetting", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedByUserId");
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedByUserId");
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedByUserId");
 
@@ -1321,19 +1321,19 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.Stock", b =>
+            modelBuilder.Entity("aqua_api.Models.Stock", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1345,25 +1345,25 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.StockDetail", b =>
+            modelBuilder.Entity("aqua_api.Models.StockDetail", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.Stock", "Stock")
+                    b.HasOne("aqua_api.Models.Stock", "Stock")
                         .WithOne("StockDetail")
-                        .HasForeignKey("crm_api.Models.StockDetail", "StockId")
+                        .HasForeignKey("aqua_api.Models.StockDetail", "StockId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1377,25 +1377,25 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.StockImage", b =>
+            modelBuilder.Entity("aqua_api.Models.StockImage", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.Stock", "Stock")
+                    b.HasOne("aqua_api.Models.Stock", "Stock")
                         .WithMany("StockImages")
                         .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1409,31 +1409,31 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.StockRelation", b =>
+            modelBuilder.Entity("aqua_api.Models.StockRelation", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.Stock", "RelatedStock")
+                    b.HasOne("aqua_api.Models.Stock", "RelatedStock")
                         .WithMany()
                         .HasForeignKey("RelatedStockId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.Stock", "Stock")
+                    b.HasOne("aqua_api.Models.Stock", "Stock")
                         .WithMany("ParentRelations")
                         .HasForeignKey("StockId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1449,25 +1449,25 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.User", b =>
+            modelBuilder.Entity("aqua_api.Models.User", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.UserAuthority", "RoleNavigation")
+                    b.HasOne("aqua_api.Models.UserAuthority", "RoleNavigation")
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1481,19 +1481,19 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserAuthority", b =>
+            modelBuilder.Entity("aqua_api.Models.UserAuthority", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1505,24 +1505,24 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserDetail", b =>
+            modelBuilder.Entity("aqua_api.Models.UserDetail", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "User")
+                    b.HasOne("aqua_api.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1537,19 +1537,19 @@ namespace crm_api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionDefinition", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionDefinition", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1561,19 +1561,19 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionGroup", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionGroup", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1585,31 +1585,31 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionGroupPermission", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionGroupPermission", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.UserPermissions.PermissionDefinition", "PermissionDefinition")
+                    b.HasOne("aqua_api.Models.UserPermissions.PermissionDefinition", "PermissionDefinition")
                         .WithMany("GroupPermissions")
                         .HasForeignKey("PermissionDefinitionId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.UserPermissions.PermissionGroup", "PermissionGroup")
+                    b.HasOne("aqua_api.Models.UserPermissions.PermissionGroup", "PermissionGroup")
                         .WithMany("GroupPermissions")
                         .HasForeignKey("PermissionGroupId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1625,30 +1625,30 @@ namespace crm_api.Migrations
                     b.Navigation("UpdatedByUser");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.UserPermissionGroup", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.UserPermissionGroup", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.UserPermissions.PermissionGroup", "PermissionGroup")
+                    b.HasOne("aqua_api.Models.UserPermissions.PermissionGroup", "PermissionGroup")
                         .WithMany("UserGroups")
                         .HasForeignKey("PermissionGroupId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "User")
+                    b.HasOne("aqua_api.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
@@ -1665,24 +1665,24 @@ namespace crm_api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserSession", b =>
+            modelBuilder.Entity("aqua_api.Models.UserSession", b =>
                 {
-                    b.HasOne("crm_api.Models.User", "CreatedByUser")
+                    b.HasOne("aqua_api.Models.User", "CreatedByUser")
                         .WithMany()
                         .HasForeignKey("CreatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "DeletedByUser")
+                    b.HasOne("aqua_api.Models.User", "DeletedByUser")
                         .WithMany()
                         .HasForeignKey("DeletedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "UpdatedByUser")
+                    b.HasOne("aqua_api.Models.User", "UpdatedByUser")
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("crm_api.Models.User", "User")
+                    b.HasOne("aqua_api.Models.User", "User")
                         .WithMany("Sessions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1697,7 +1697,7 @@ namespace crm_api.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("crm_api.Models.Stock", b =>
+            modelBuilder.Entity("aqua_api.Models.Stock", b =>
                 {
                     b.Navigation("ParentRelations");
 
@@ -1706,17 +1706,17 @@ namespace crm_api.Migrations
                     b.Navigation("StockImages");
                 });
 
-            modelBuilder.Entity("crm_api.Models.User", b =>
+            modelBuilder.Entity("aqua_api.Models.User", b =>
                 {
                     b.Navigation("Sessions");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionDefinition", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionDefinition", b =>
                 {
                     b.Navigation("GroupPermissions");
                 });
 
-            modelBuilder.Entity("crm_api.Models.UserPermissions.PermissionGroup", b =>
+            modelBuilder.Entity("aqua_api.Models.UserPermissions.PermissionGroup", b =>
                 {
                     b.Navigation("GroupPermissions");
 

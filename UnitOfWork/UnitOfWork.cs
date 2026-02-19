@@ -1,16 +1,16 @@
-using crm_api.Data;
-using crm_api.Models;
-using crm_api.Models.UserPermissions;
-using crm_api.Repositories;
+using aqua_api.Data;
+using aqua_api.Models;
+using aqua_api.Models.UserPermissions;
+using aqua_api.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Collections.Concurrent;
 
-namespace crm_api.UnitOfWork
+namespace aqua_api.UnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    public class EfUnitOfWork : IUnitOfWork
     {
-        private readonly CmsDbContext _context;
+        private readonly AquaDbContext _context;
         private readonly ConcurrentDictionary<Type, object> _repositories;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private IDbContextTransaction? _transaction;
@@ -31,12 +31,14 @@ namespace crm_api.UnitOfWork
         private IGenericRepository<PermissionGroupPermission>? _permissionGroupPermissions;
         private IGenericRepository<UserPermissionGroup>? _userPermissionGroups;
 
-        public UnitOfWork(CmsDbContext context, IHttpContextAccessor httpContextAccessor)
+        public EfUnitOfWork(AquaDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _repositories = new ConcurrentDictionary<Type, object>();
         }
+
+        public AquaDbContext Db => _context;
 
         public IGenericRepository<User> Users => _users ??= new GenericRepository<User>(_context, _httpContextAccessor);
         public IGenericRepository<UserAuthority> UserAuthorities => _userAuthorities ??= new GenericRepository<UserAuthority>(_context, _httpContextAccessor);
@@ -58,23 +60,9 @@ namespace crm_api.UnitOfWork
             return (IGenericRepository<T>)_repositories.GetOrAdd(typeof(T), _ => new GenericRepository<T>(_context, _httpContextAccessor));
         }
 
-        public async Task<int> SaveChangesAsync()
-        {
-            try
-            {
-                return await _context.SaveChangesAsync();
-            }
-            catch
-            {
-                if (_transaction != null)
-                {
-                    await RollbackTransactionAsync();
-                }
-                throw;
-            }
-        }
+        public Task<int> SaveChanges() => _context.SaveChangesAsync();
 
-        public async Task BeginTransactionAsync()
+        public async Task BeginTransaction()
         {
             if (_transaction != null)
             {
@@ -84,7 +72,7 @@ namespace crm_api.UnitOfWork
             _transaction = await _context.Database.BeginTransactionAsync();
         }
 
-        public async Task CommitTransactionAsync()
+        public async Task Commit()
         {
             if (_transaction == null)
             {
@@ -95,11 +83,6 @@ namespace crm_api.UnitOfWork
             {
                 await _transaction.CommitAsync();
             }
-            catch
-            {
-                await RollbackTransactionAsync();
-                throw;
-            }
             finally
             {
                 await _transaction.DisposeAsync();
@@ -107,7 +90,7 @@ namespace crm_api.UnitOfWork
             }
         }
 
-        public async Task RollbackTransactionAsync()
+        public async Task Rollback()
         {
             if (_transaction == null)
             {
@@ -125,6 +108,11 @@ namespace crm_api.UnitOfWork
             }
         }
 
+        public Task<int> SaveChangesAsync() => SaveChanges();
+        public Task BeginTransactionAsync() => BeginTransaction();
+        public Task CommitTransactionAsync() => Commit();
+        public Task RollbackTransactionAsync() => Rollback();
+
         public void Dispose()
         {
             Dispose(true);
@@ -139,6 +127,14 @@ namespace crm_api.UnitOfWork
                 _context.Dispose();
                 _disposed = true;
             }
+        }
+    }
+
+    public class UnitOfWork : EfUnitOfWork
+    {
+        public UnitOfWork(AquaDbContext context, IHttpContextAccessor httpContextAccessor)
+            : base(context, httpContextAccessor)
+        {
         }
     }
 }

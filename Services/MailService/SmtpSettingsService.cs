@@ -1,8 +1,8 @@
 using AutoMapper;
-using crm_api.DTOs;
-using crm_api.Interfaces;
-using crm_api.Models;
-using crm_api.UnitOfWork;
+using aqua_api.DTOs;
+using aqua_api.Interfaces;
+using aqua_api.Models;
+using aqua_api.UnitOfWork;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class SmtpSettingsService : ISmtpSettingsService
     {
@@ -67,17 +67,16 @@ namespace crm_api.Services
         {
             try
             {
-                // Id=1 kayıt
                 var entity = await _unitOfWork.SmtpSettings
                     .Query()
-                    .Where(x => x.Id == 1 && !x.IsDeleted)
+                    .Where(x => !x.IsDeleted)
+                    .OrderBy(x => x.Id)
                     .FirstOrDefaultAsync();
 
                 if (entity == null)
                 {
                     entity = new SmtpSetting
                     {
-                        Id = 1,
                         IsDeleted = false,
                         CreatedDate = DateTime.UtcNow,
                         CreatedBy = userId
@@ -168,7 +167,8 @@ namespace crm_api.Services
         {
             var entity = await _unitOfWork.SmtpSettings
                 .Query()
-                .Where(x => x.Id == 1 && !x.IsDeleted)
+                .Where(x => !x.IsDeleted)
+                .OrderBy(x => x.Id)
                 .FirstOrDefaultAsync();
 
             if (entity != null)
@@ -186,7 +186,6 @@ namespace crm_api.Services
 
             entity = new SmtpSetting
             {
-                Id = 1,
                 IsDeleted = false,
                 CreatedDate = DateTime.UtcNow,
                 UpdatedDate = DateTime.UtcNow,

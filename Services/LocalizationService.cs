@@ -1,9 +1,9 @@
-using crm_api.Interfaces;
+using aqua_api.Interfaces;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
 
-namespace crm_api.Services
+namespace aqua_api.Services
 {
     public class LocalizationService : ILocalizationService
     {
@@ -18,7 +18,7 @@ namespace crm_api.Services
             _logger = logger;
 
             var assembly = Assembly.GetExecutingAssembly();
-            _resourceManager = new ResourceManager("crm_api.Resources.Messages", assembly);
+            _resourceManager = new ResourceManager("aqua_api.Resources.Messages", assembly);
         }
 
         public string GetLocalizedString(string key)

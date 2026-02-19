@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace crm_api.DTOs
+namespace aqua_api.DTOs
 {
     // GET /api/settings/smtp response
     public class SmtpSettingsDto

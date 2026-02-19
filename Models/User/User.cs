@@ -1,7 +1,7 @@
 using System;
-using crm_api.Models;
+using aqua_api.Models;
 
-namespace crm_api.Models
+namespace aqua_api.Models
 {
     public class User : BaseEntity
     {

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace crm_api.Helpers
+namespace aqua_api.Helpers
 {
     /// <summary>
     /// Middleware to extract BranchCode from request header and store it in HttpContext.Items

@@ -1,4 +1,4 @@
-namespace crm_api.DTOs
+namespace aqua_api.DTOs
 {
     public class MyPermissionsDto
     {

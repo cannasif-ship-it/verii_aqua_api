@@ -1,4 +1,4 @@
-namespace crm_api.Resources
+namespace aqua_api.Resources
 {
     public class Messages
     {
