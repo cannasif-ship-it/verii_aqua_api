@@ -35,7 +35,7 @@ namespace aqua_api.Services
                 {
                     var image = _mapper.Map<StockImage>(imageDto);
                     images.Add(image);
-                    await _unitOfWork.Repository<StockImage>().AddAsync(image);
+                    await _unitOfWork.StockImages.AddAsync(image);
                 }
 
                 await _unitOfWork.SaveChangesAsync();
@@ -81,7 +81,7 @@ namespace aqua_api.Services
                 await _unitOfWork.BeginTransactionAsync();
 
                 var uploadedImages = new List<StockImageDto>();
-                var maxSortOrder = await _unitOfWork.Repository<StockImage>()
+                var maxSortOrder = await _unitOfWork.StockImages
                     .Query()
                     .Where(x => x.StockId == stockId && !x.IsDeleted)
                     .OrderByDescending(x => x.SortOrder)
@@ -114,7 +114,7 @@ namespace aqua_api.Services
                         IsPrimary = false
                     };
 
-                    await _unitOfWork.Repository<StockImage>().AddAsync(image);
+                    await _unitOfWork.StockImages.AddAsync(image);
                     uploadedImages.Add(_mapper.Map<StockImageDto>(image));
                 }
 
@@ -139,7 +139,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var images = await _unitOfWork.Repository<StockImage>()
+                var images = await _unitOfWork.StockImages
                     .Query()
                     .Where(x => x.StockId == stockId && !x.IsDeleted)
                     .Include(x => x.Stock)
@@ -169,7 +169,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var image = await _unitOfWork.Repository<StockImage>().GetByIdAsync(id);
+                var image = await _unitOfWork.StockImages.GetByIdAsync(id);
                 if (image == null)
                 {
                     return ApiResponse<object>.ErrorResult(
@@ -178,7 +178,7 @@ namespace aqua_api.Services
                         StatusCodes.Status404NotFound);
                 }
 
-                await _unitOfWork.Repository<StockImage>().SoftDeleteAsync(id);
+                await _unitOfWork.StockImages.SoftDeleteAsync(id);
                 await _unitOfWork.SaveChangesAsync();
 
                 return ApiResponse<object>.SuccessResult(
@@ -200,7 +200,7 @@ namespace aqua_api.Services
             {
                 await _unitOfWork.BeginTransactionAsync();
 
-                var image = await _unitOfWork.Repository<StockImage>().GetByIdForUpdateAsync(imageId);
+                var image = await _unitOfWork.StockImages.GetByIdForUpdateAsync(imageId);
                 if (image == null)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
@@ -210,7 +210,7 @@ namespace aqua_api.Services
                         StatusCodes.Status404NotFound);
                 }
 
-                var otherPrimaryImages = await _unitOfWork.Repository<StockImage>()
+                var otherPrimaryImages = await _unitOfWork.StockImages
                     .Query()
                     .Where(x => x.StockId == image.StockId && x.Id != imageId && x.IsPrimary && !x.IsDeleted)
                     .ToListAsync();
@@ -218,15 +218,15 @@ namespace aqua_api.Services
                 foreach (var otherImage in otherPrimaryImages)
                 {
                     otherImage.IsPrimary = false;
-                    await _unitOfWork.Repository<StockImage>().UpdateAsync(otherImage);
+                    await _unitOfWork.StockImages.UpdateAsync(otherImage);
                 }
 
                 image.IsPrimary = true;
-                await _unitOfWork.Repository<StockImage>().UpdateAsync(image);
+                await _unitOfWork.StockImages.UpdateAsync(image);
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                var imageWithNav = await _unitOfWork.Repository<StockImage>()
+                var imageWithNav = await _unitOfWork.StockImages
                     .Query()
                     .Include(x => x.Stock)
                     .Include(x => x.CreatedByUser)

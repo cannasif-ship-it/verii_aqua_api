@@ -28,7 +28,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<GoodsReceipt>()
+                var entity = await _unitOfWork.GoodsReceipts
                     .Query()
                     .Include(x => x.Project)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
@@ -60,7 +60,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<GoodsReceipt>()
+                var query = _unitOfWork.GoodsReceipts
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .Include(x => x.Project)
@@ -103,7 +103,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<GoodsReceipt>(dto);
-                await _unitOfWork.Repository<GoodsReceipt>().AddAsync(entity);
+                await _unitOfWork.GoodsReceipts.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<GoodsReceiptDto>(entity);
@@ -122,7 +122,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<GoodsReceipt>();
+                var repo = _unitOfWork.GoodsReceipts;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -153,7 +153,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<GoodsReceipt>();
+                var repo = _unitOfWork.GoodsReceipts;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

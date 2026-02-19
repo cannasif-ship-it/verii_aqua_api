@@ -27,7 +27,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<DailyWeather>()
+                var entity = await _unitOfWork.DailyWeathers
                     .Query()
                     .Include(x => x.Project)
                     .Include(x => x.WeatherType)
@@ -61,7 +61,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<DailyWeather>()
+                var query = _unitOfWork.DailyWeathers
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .Include(x => x.Project)
@@ -106,7 +106,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<DailyWeather>(dto);
-                await _unitOfWork.Repository<DailyWeather>().AddAsync(entity);
+                await _unitOfWork.DailyWeathers.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<DailyWeatherDto>(entity);
@@ -125,7 +125,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<DailyWeather>();
+                var repo = _unitOfWork.DailyWeathers;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -156,7 +156,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<DailyWeather>();
+                var repo = _unitOfWork.DailyWeathers;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

@@ -25,7 +25,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<WeatherSeverity>()
+                var entity = await _unitOfWork.WeatherSeverities
                     .Query()
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
@@ -56,7 +56,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<WeatherSeverity>()
+                var query = _unitOfWork.WeatherSeverities
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .ApplyFilters(request.Filters, request.FilterLogic);
@@ -98,7 +98,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<WeatherSeverity>(dto);
-                await _unitOfWork.Repository<WeatherSeverity>().AddAsync(entity);
+                await _unitOfWork.WeatherSeverities.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<WeatherSeverityDto>(entity);
@@ -117,7 +117,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<WeatherSeverity>();
+                var repo = _unitOfWork.WeatherSeverities;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -148,7 +148,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<WeatherSeverity>();
+                var repo = _unitOfWork.WeatherSeverities;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

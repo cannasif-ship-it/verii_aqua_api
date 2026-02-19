@@ -25,7 +25,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<WeatherType>()
+                var entity = await _unitOfWork.WeatherTypes
                     .Query()
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
@@ -56,7 +56,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<WeatherType>()
+                var query = _unitOfWork.WeatherTypes
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .ApplyFilters(request.Filters, request.FilterLogic);
@@ -98,7 +98,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<WeatherType>(dto);
-                await _unitOfWork.Repository<WeatherType>().AddAsync(entity);
+                await _unitOfWork.WeatherTypes.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<WeatherTypeDto>(entity);
@@ -117,7 +117,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<WeatherType>();
+                var repo = _unitOfWork.WeatherTypes;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -148,7 +148,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<WeatherType>();
+                var repo = _unitOfWork.WeatherTypes;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

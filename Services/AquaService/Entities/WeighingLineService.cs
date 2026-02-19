@@ -25,7 +25,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<WeighingLine>()
+                var entity = await _unitOfWork.WeighingLines
                     .Query()
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
@@ -56,7 +56,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<WeighingLine>()
+                var query = _unitOfWork.WeighingLines
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .ApplyFilters(request.Filters, request.FilterLogic);
@@ -98,7 +98,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<WeighingLine>(dto);
-                await _unitOfWork.Repository<WeighingLine>().AddAsync(entity);
+                await _unitOfWork.WeighingLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<WeighingLineDto>(entity);
@@ -117,7 +117,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<WeighingLine>();
+                var repo = _unitOfWork.WeighingLines;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -148,7 +148,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<WeighingLine>();
+                var repo = _unitOfWork.WeighingLines;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

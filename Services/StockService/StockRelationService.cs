@@ -25,7 +25,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var existingRelation = await _unitOfWork.Repository<StockRelation>()
+                var existingRelation = await _unitOfWork.StockRelations
                     .Query()
                     .AsNoTracking()
                     .FirstOrDefaultAsync(x => 
@@ -44,11 +44,11 @@ namespace aqua_api.Services
                 await _unitOfWork.BeginTransactionAsync();
 
                 var relation = _mapper.Map<StockRelation>(relationDto);
-                await _unitOfWork.Repository<StockRelation>().AddAsync(relation);
+                await _unitOfWork.StockRelations.AddAsync(relation);
                 await _unitOfWork.SaveChangesAsync();
                 await _unitOfWork.CommitTransactionAsync();
 
-                var relationWithNav = await _unitOfWork.Repository<StockRelation>()
+                var relationWithNav = await _unitOfWork.StockRelations
                     .Query()
                     .Include(x => x.Stock)
                     .Include(x => x.RelatedStock)
@@ -78,7 +78,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var relations = await _unitOfWork.Repository<StockRelation>()
+                var relations = await _unitOfWork.StockRelations
                     .Query()
                     .Where(x => x.StockId == stockId && !x.IsDeleted)
                     .Include(x => x.Stock)
@@ -108,7 +108,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var relation = await _unitOfWork.Repository<StockRelation>().GetByIdAsync(id);
+                var relation = await _unitOfWork.StockRelations.GetByIdAsync(id);
                 if (relation == null)
                 {
                     return ApiResponse<object>.ErrorResult(
@@ -117,7 +117,7 @@ namespace aqua_api.Services
                         StatusCodes.Status404NotFound);
                 }
 
-                await _unitOfWork.Repository<StockRelation>().SoftDeleteAsync(id);
+                await _unitOfWork.StockRelations.SoftDeleteAsync(id);
                 await _unitOfWork.SaveChangesAsync();
 
                 return ApiResponse<object>.SuccessResult(

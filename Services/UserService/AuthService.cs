@@ -303,7 +303,7 @@ namespace aqua_api.Services
                         CreatedDate = DateTime.UtcNow,
                         IsDeleted = false
                     };
-                    await _unitOfWork.Repository<PasswordResetRequest>().AddAsync(reset);
+                    await _unitOfWork.PasswordResetRequests.AddAsync(reset);
                     await _unitOfWork.SaveChangesAsync();
                     
                     var fullName = string.Join(" ", new[] { user.FirstName, user.LastName }.Where(x => !string.IsNullOrWhiteSpace(x)));
@@ -341,7 +341,7 @@ namespace aqua_api.Services
                 var tokenHash = ComputeSha256Hash(request.Token);
                 var now = DateTime.UtcNow;
 
-                var reset = await _unitOfWork.Repository<PasswordResetRequest>().Query(tracking: true)
+                var reset = await _unitOfWork.PasswordResetRequests.Query(tracking: true)
                     .Include(r => r.User)
                     .FirstOrDefaultAsync(r => r.TokenHash == tokenHash && r.UsedAt == null && r.ExpiresAt > now && !r.IsDeleted);
 

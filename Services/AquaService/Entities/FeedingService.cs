@@ -25,7 +25,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<Feeding>()
+                var entity = await _unitOfWork.Feedings
                     .Query()
                     .Include(x => x.Project)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
@@ -57,7 +57,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<Feeding>()
+                var query = _unitOfWork.Feedings
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .Include(x => x.Project)
@@ -100,7 +100,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<Feeding>(dto);
-                await _unitOfWork.Repository<Feeding>().AddAsync(entity);
+                await _unitOfWork.Feedings.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<FeedingDto>(entity);
@@ -119,7 +119,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<Feeding>();
+                var repo = _unitOfWork.Feedings;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -150,7 +150,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<Feeding>();
+                var repo = _unitOfWork.Feedings;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

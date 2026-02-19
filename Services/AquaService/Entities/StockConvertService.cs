@@ -35,7 +35,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<StockConvert>()
+                var entity = await _unitOfWork.StockConverts
                     .Query()
                     .Include(x => x.Project)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
@@ -67,7 +67,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<StockConvert>()
+                var query = _unitOfWork.StockConverts
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .Include(x => x.Project)
@@ -110,7 +110,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<StockConvert>(dto);
-                await _unitOfWork.Repository<StockConvert>().AddAsync(entity);
+                await _unitOfWork.StockConverts.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<StockConvertDto>(entity);
@@ -129,7 +129,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<StockConvert>();
+                var repo = _unitOfWork.StockConverts;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -160,7 +160,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<StockConvert>();
+                var repo = _unitOfWork.StockConverts;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

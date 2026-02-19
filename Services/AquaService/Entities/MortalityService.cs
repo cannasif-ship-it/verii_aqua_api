@@ -35,7 +35,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<Mortality>()
+                var entity = await _unitOfWork.Mortalities
                     .Query()
                     .Include(x => x.Project)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
@@ -67,7 +67,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<Mortality>()
+                var query = _unitOfWork.Mortalities
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .Include(x => x.Project)
@@ -110,7 +110,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<Mortality>(dto);
-                await _unitOfWork.Repository<Mortality>().AddAsync(entity);
+                await _unitOfWork.Mortalities.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<MortalityDto>(entity);
@@ -129,7 +129,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<Mortality>();
+                var repo = _unitOfWork.Mortalities;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -160,7 +160,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<Mortality>();
+                var repo = _unitOfWork.Mortalities;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

@@ -25,7 +25,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<BatchMovement>()
+                var entity = await _unitOfWork.BatchMovements
                     .Query()
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
@@ -56,7 +56,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<BatchMovement>()
+                var query = _unitOfWork.BatchMovements
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .ApplyFilters(request.Filters, request.FilterLogic);
@@ -98,7 +98,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<BatchMovement>(dto);
-                await _unitOfWork.Repository<BatchMovement>().AddAsync(entity);
+                await _unitOfWork.BatchMovements.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<BatchMovementDto>(entity);
@@ -117,7 +117,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<BatchMovement>();
+                var repo = _unitOfWork.BatchMovements;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -148,7 +148,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<BatchMovement>();
+                var repo = _unitOfWork.BatchMovements;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)

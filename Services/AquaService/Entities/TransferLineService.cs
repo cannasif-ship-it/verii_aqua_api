@@ -25,7 +25,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var entity = await _unitOfWork.Repository<TransferLine>()
+                var entity = await _unitOfWork.TransferLines
                     .Query()
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
@@ -56,7 +56,7 @@ namespace aqua_api.Services
                 request ??= new PagedRequest();
                 request.Filters ??= new List<Filter>();
 
-                var query = _unitOfWork.Repository<TransferLine>()
+                var query = _unitOfWork.TransferLines
                     .Query()
                     .Where(x => !x.IsDeleted)
                     .ApplyFilters(request.Filters, request.FilterLogic);
@@ -98,7 +98,7 @@ namespace aqua_api.Services
             try
             {
                 var entity = _mapper.Map<TransferLine>(dto);
-                await _unitOfWork.Repository<TransferLine>().AddAsync(entity);
+                await _unitOfWork.TransferLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<TransferLineDto>(entity);
@@ -117,7 +117,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<TransferLine>();
+                var repo = _unitOfWork.TransferLines;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 
                 if (entity == null)
@@ -148,7 +148,7 @@ namespace aqua_api.Services
         {
             try
             {
-                var repo = _unitOfWork.Repository<TransferLine>();
+                var repo = _unitOfWork.TransferLines;
                 var isDeleted = await repo.SoftDeleteAsync(id);
 
                 if (!isDeleted)
