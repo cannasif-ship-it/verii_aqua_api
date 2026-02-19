@@ -7,7 +7,11 @@ namespace aqua_api.DTOs
     {
         public long Id { get; set; }
         public long ProjectId { get; set; }
+        public string? ProjectCode { get; set; }
+        public string? ProjectName { get; set; }
         public long OperationTypeId { get; set; }
+        public string? OperationTypeCode { get; set; }
+        public string? OperationTypeName { get; set; }
         public string OperationNo { get; set; }
         public DateTime OperationDate { get; set; }
         public DocumentStatus Status { get; set; }

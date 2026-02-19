@@ -29,6 +29,9 @@ namespace aqua_api.Services
             {
                 var entity = await _unitOfWork.Repository<DailyWeather>()
                     .Query()
+                    .Include(x => x.Project)
+                    .Include(x => x.WeatherType)
+                    .Include(x => x.WeatherSeverity)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
                 if (entity == null)
@@ -61,6 +64,9 @@ namespace aqua_api.Services
                 var query = _unitOfWork.Repository<DailyWeather>()
                     .Query()
                     .Where(x => !x.IsDeleted)
+                    .Include(x => x.Project)
+                    .Include(x => x.WeatherType)
+                    .Include(x => x.WeatherSeverity)
                     .ApplyFilters(request.Filters, request.FilterLogic);
 
                 var sortBy = string.IsNullOrWhiteSpace(request.SortBy) ? nameof(DailyWeather.Id) : request.SortBy;

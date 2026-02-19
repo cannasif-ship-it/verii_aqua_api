@@ -8,7 +8,9 @@ namespace aqua_api.Mappings
     {
         public MortalityMappingProfile()
         {
-            CreateMap<Mortality, MortalityDto>();
+            CreateMap<Mortality, MortalityDto>()
+                .ForMember(dest => dest.ProjectCode, opt => opt.MapFrom(src => src.Project != null ? src.Project.ProjectCode : null))
+                .ForMember(dest => dest.ProjectName, opt => opt.MapFrom(src => src.Project != null ? src.Project.ProjectName : null));
             CreateMap<CreateMortalityDto, Mortality>();
             CreateMap<UpdateMortalityDto, Mortality>();
         }

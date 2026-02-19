@@ -27,6 +27,8 @@ namespace aqua_api.Services
             {
                 var entity = await _unitOfWork.Repository<ProjectCage>()
                     .Query()
+                    .Include(x => x.Project)
+                    .Include(x => x.Cage)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
                 if (entity == null)
@@ -59,6 +61,8 @@ namespace aqua_api.Services
                 var query = _unitOfWork.Repository<ProjectCage>()
                     .Query()
                     .Where(x => !x.IsDeleted)
+                    .Include(x => x.Project)
+                    .Include(x => x.Cage)
                     .ApplyFilters(request.Filters, request.FilterLogic);
 
                 var sortBy = string.IsNullOrWhiteSpace(request.SortBy) ? nameof(ProjectCage.Id) : request.SortBy;

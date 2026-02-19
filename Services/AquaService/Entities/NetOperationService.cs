@@ -37,6 +37,8 @@ namespace aqua_api.Services
             {
                 var entity = await _unitOfWork.Repository<NetOperation>()
                     .Query()
+                    .Include(x => x.Project)
+                    .Include(x => x.OperationType)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
                 if (entity == null)
@@ -69,6 +71,8 @@ namespace aqua_api.Services
                 var query = _unitOfWork.Repository<NetOperation>()
                     .Query()
                     .Where(x => !x.IsDeleted)
+                    .Include(x => x.Project)
+                    .Include(x => x.OperationType)
                     .ApplyFilters(request.Filters, request.FilterLogic);
 
                 var sortBy = string.IsNullOrWhiteSpace(request.SortBy) ? nameof(NetOperation.Id) : request.SortBy;

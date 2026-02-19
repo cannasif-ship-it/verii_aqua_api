@@ -37,6 +37,7 @@ namespace aqua_api.Services
             {
                 var entity = await _unitOfWork.Repository<Weighing>()
                     .Query()
+                    .Include(x => x.Project)
                     .FirstOrDefaultAsync(x => x.Id == id && !x.IsDeleted);
 
                 if (entity == null)
@@ -69,6 +70,7 @@ namespace aqua_api.Services
                 var query = _unitOfWork.Repository<Weighing>()
                     .Query()
                     .Where(x => !x.IsDeleted)
+                    .Include(x => x.Project)
                     .ApplyFilters(request.Filters, request.FilterLogic);
 
                 var sortBy = string.IsNullOrWhiteSpace(request.SortBy) ? nameof(Weighing.Id) : request.SortBy;
