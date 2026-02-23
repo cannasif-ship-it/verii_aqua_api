@@ -16,7 +16,22 @@ namespace aqua_api.Services
         private const string StockImagesFolder = "stock-images";
         private const string ActivityImagesFolder = "activity-images";
         private const long MaxFileSize = 5 * 1024 * 1024; // 5 MB
-        private readonly string[] AllowedExtensions = { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        private static readonly HashSet<string> AllowedExtensions = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".gif",
+            ".webp"
+        };
+        private static readonly HashSet<string> AllowedContentTypes = new(StringComparer.OrdinalIgnoreCase)
+        {
+            "image/jpeg",
+            "image/pjpeg",
+            "image/png",
+            "image/gif",
+            "image/webp"
+        };
 
         public FileUploadService(IWebHostEnvironment environment, ILocalizationService localizationService)
         {
@@ -28,33 +43,12 @@ namespace aqua_api.Services
         {
             try
             {
-                // Validation
-                if (file == null || file.Length == 0)
+                var validationError = ValidateImageFile(file);
+                if (validationError != null)
                 {
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.FileRequired"),
-                        null,
-                        400);
+                    return validationError;
                 }
-
-                if (file.Length > MaxFileSize)
-                {
-                    var maxSizeMb = MaxFileSize / (1024 * 1024);
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.FileSizeExceeded", maxSizeMb),
-                        null,
-                        400);
-                }
-
                 var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-                if (!AllowedExtensions.Contains(extension))
-                {
-                    var allowedFormats = string.Join(", ", AllowedExtensions);
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.InvalidFileFormat", allowedFormats),
-                        null,
-                        400);
-                }
 
                 // Create directory in project root/uploads/user-profiles (not wwwroot)
                 var uploadsBasePath = Path.Combine(_environment.ContentRootPath, "uploads");
@@ -197,33 +191,12 @@ namespace aqua_api.Services
         {
             try
             {
-                // Validation
-                if (file == null || file.Length == 0)
+                var validationError = ValidateImageFile(file);
+                if (validationError != null)
                 {
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.FileRequired"),
-                        null,
-                        400);
+                    return validationError;
                 }
-
-                if (file.Length > MaxFileSize)
-                {
-                    var maxSizeMb = MaxFileSize / (1024 * 1024);
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.FileSizeExceeded", maxSizeMb),
-                        null,
-                        400);
-                }
-
                 var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-                if (!AllowedExtensions.Contains(extension))
-                {
-                    var allowedFormats = string.Join(", ", AllowedExtensions);
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.InvalidFileFormat", allowedFormats),
-                        null,
-                        400);
-                }
 
                 // Create directory in project root/uploads/stock-images
                 var uploadsBasePath = Path.Combine(_environment.ContentRootPath, "uploads");
@@ -364,32 +337,12 @@ namespace aqua_api.Services
         {
             try
             {
-                if (file == null || file.Length == 0)
+                var validationError = ValidateImageFile(file);
+                if (validationError != null)
                 {
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.FileRequired"),
-                        null,
-                        400);
+                    return validationError;
                 }
-
-                if (file.Length > MaxFileSize)
-                {
-                    var maxSizeMb = MaxFileSize / (1024 * 1024);
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.FileSizeExceeded", maxSizeMb),
-                        null,
-                        400);
-                }
-
                 var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
-                if (!AllowedExtensions.Contains(extension))
-                {
-                    var allowedFormats = string.Join(", ", AllowedExtensions);
-                    return ApiResponse<string>.ErrorResult(
-                        _localizationService.GetLocalizedString("FileUploadService.InvalidFileFormat", allowedFormats),
-                        null,
-                        400);
-                }
 
                 var uploadsBasePath = Path.Combine(_environment.ContentRootPath, "uploads");
                 var activityImagesPath = Path.Combine(uploadsBasePath, ActivityImagesFolder);
@@ -587,6 +540,48 @@ namespace aqua_api.Services
                 // Silently fail if permission setting is not supported (e.g., on Linux)
                 // The directory will still be created, but permissions might need to be set manually
             }
+        }
+
+        private ApiResponse<string>? ValidateImageFile(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                return ApiResponse<string>.ErrorResult(
+                    _localizationService.GetLocalizedString("FileUploadService.FileRequired"),
+                    null,
+                    400);
+            }
+
+            if (file.Length > MaxFileSize)
+            {
+                var maxSizeMb = MaxFileSize / (1024 * 1024);
+                return ApiResponse<string>.ErrorResult(
+                    _localizationService.GetLocalizedString("FileUploadService.FileSizeExceeded", maxSizeMb),
+                    null,
+                    400);
+            }
+
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!AllowedExtensions.Contains(extension))
+            {
+                var allowedFormats = string.Join(", ", AllowedExtensions);
+                return ApiResponse<string>.ErrorResult(
+                    _localizationService.GetLocalizedString("FileUploadService.InvalidFileFormat", allowedFormats),
+                    null,
+                    400);
+            }
+
+            var contentType = file.ContentType?.Trim();
+            if (string.IsNullOrWhiteSpace(contentType) || !AllowedContentTypes.Contains(contentType))
+            {
+                var allowedFormats = string.Join(", ", AllowedExtensions);
+                return ApiResponse<string>.ErrorResult(
+                    _localizationService.GetLocalizedString("FileUploadService.InvalidFileFormat", allowedFormats),
+                    null,
+                    400);
+            }
+
+            return null;
         }
     }
 }
