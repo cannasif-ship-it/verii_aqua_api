@@ -102,12 +102,63 @@ namespace aqua_api.Services
         {
             try
             {
+                var normalizedReceiptNo = dto.ReceiptNo?.Trim() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(normalizedReceiptNo))
+                {
+                    throw new InvalidOperationException("Fis numarasi zorunludur.");
+                }
+
+                var duplicateReceiptNo = await _unitOfWork.GoodsReceipts
+                    .Query()
+                    .AnyAsync(x => !x.IsDeleted && x.ReceiptNo == normalizedReceiptNo);
+
+                if (duplicateReceiptNo)
+                {
+                    throw new InvalidOperationException("Var olan bir mal kabul no girdiniz.");
+                }
+
+                if (dto.ProjectId.HasValue)
+                {
+                    var projectExists = await _unitOfWork.Projects
+                        .Query()
+                        .AnyAsync(x => !x.IsDeleted && x.Id == dto.ProjectId.Value);
+
+                    if (!projectExists)
+                    {
+                        throw new InvalidOperationException("Secilen proje bulunamadi.");
+                    }
+
+                    var existsForProject = await _unitOfWork.GoodsReceipts
+                        .Query()
+                        .AnyAsync(x => !x.IsDeleted && x.ProjectId == dto.ProjectId.Value);
+
+                    if (existsForProject)
+                    {
+                        throw new InvalidOperationException("Bu proje için zaten bir mal kabul kaydı mevcut.");
+                    }
+                }
+
+                dto.ReceiptNo = normalizedReceiptNo;
                 var entity = _mapper.Map<GoodsReceipt>(dto);
                 await _unitOfWork.GoodsReceipts.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<GoodsReceiptDto>(entity);
                 return ApiResponse<GoodsReceiptDto>.SuccessResult(result, _localizationService.GetLocalizedString("GoodsReceiptService.OperationSuccessful"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return ApiResponse<GoodsReceiptDto>.ErrorResult(
+                    ex.Message,
+                    ex.Message,
+                    StatusCodes.Status400BadRequest);
+            }
+            catch (DbUpdateException ex) when (IsKnownGoodsReceiptConstraintError(ex, out var message))
+            {
+                return ApiResponse<GoodsReceiptDto>.ErrorResult(
+                    message,
+                    message,
+                    StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -133,12 +184,63 @@ namespace aqua_api.Services
                         StatusCodes.Status404NotFound);
                 }
 
+                var normalizedReceiptNo = dto.ReceiptNo?.Trim() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(normalizedReceiptNo))
+                {
+                    throw new InvalidOperationException("Fis numarasi zorunludur.");
+                }
+
+                var duplicateReceiptNo = await _unitOfWork.GoodsReceipts
+                    .Query()
+                    .AnyAsync(x => !x.IsDeleted && x.Id != id && x.ReceiptNo == normalizedReceiptNo);
+
+                if (duplicateReceiptNo)
+                {
+                    throw new InvalidOperationException("Var olan bir mal kabul no girdiniz.");
+                }
+
+                if (dto.ProjectId.HasValue)
+                {
+                    var projectExists = await _unitOfWork.Projects
+                        .Query()
+                        .AnyAsync(x => !x.IsDeleted && x.Id == dto.ProjectId.Value);
+
+                    if (!projectExists)
+                    {
+                        throw new InvalidOperationException("Secilen proje bulunamadi.");
+                    }
+
+                    var existsForProject = await _unitOfWork.GoodsReceipts
+                        .Query()
+                        .AnyAsync(x => !x.IsDeleted && x.Id != id && x.ProjectId == dto.ProjectId.Value);
+
+                    if (existsForProject)
+                    {
+                        throw new InvalidOperationException("Bu proje icin zaten bir mal kabul kaydi mevcut.");
+                    }
+                }
+
+                dto.ReceiptNo = normalizedReceiptNo;
                 _mapper.Map(dto, entity);
                 await repo.UpdateAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<GoodsReceiptDto>(entity);
                 return ApiResponse<GoodsReceiptDto>.SuccessResult(result, _localizationService.GetLocalizedString("GoodsReceiptService.OperationSuccessful"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return ApiResponse<GoodsReceiptDto>.ErrorResult(
+                    ex.Message,
+                    ex.Message,
+                    StatusCodes.Status400BadRequest);
+            }
+            catch (DbUpdateException ex) when (IsKnownGoodsReceiptConstraintError(ex, out var message))
+            {
+                return ApiResponse<GoodsReceiptDto>.ErrorResult(
+                    message,
+                    message,
+                    StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -268,7 +370,7 @@ namespace aqua_api.Services
             {
                 await _unitOfWork.Rollback();
                 return ApiResponse<bool>.ErrorResult(
-                    _localizationService.GetLocalizedString("GoodsReceiptService.BusinessRuleError"),
+                    ex.Message,
                     ex.Message,
                     StatusCodes.Status400BadRequest);
             }
@@ -280,6 +382,32 @@ namespace aqua_api.Services
                     ex.Message,
                     StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private static bool IsKnownGoodsReceiptConstraintError(DbUpdateException ex, out string message)
+        {
+            var allMessages = ex.ToString();
+
+            if (allMessages.Contains("UX_RII_GoodsReceipt_ReceiptNo_Active", StringComparison.OrdinalIgnoreCase))
+            {
+                message = "Var olan bir mal kabul no girdiniz.";
+                return true;
+            }
+
+            if (allMessages.Contains("UX_RII_GoodsReceipt_Project_Active", StringComparison.OrdinalIgnoreCase))
+            {
+                message = "Bu proje icin zaten bir mal kabul kaydi mevcut.";
+                return true;
+            }
+
+            if (allMessages.Contains("FK_RII_GoodsReceipt_RII_Project_ProjectId", StringComparison.OrdinalIgnoreCase))
+            {
+                message = "Secilen proje bulunamadi.";
+                return true;
+            }
+
+            message = string.Empty;
+            return false;
         }
 
         private static void EnsureDraftStatus(DocumentStatus status, string documentName)
