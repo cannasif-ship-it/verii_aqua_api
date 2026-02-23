@@ -9,8 +9,6 @@ namespace aqua_api.Data.Configurations
         protected override void ConfigureEntity(EntityTypeBuilder<NetOperationLine> builder)
         {
             builder.ToTable("RII_NetOperationLine");
-            builder.Property(x => x.Quantity).HasPrecision(18, 3).IsRequired();
-            builder.Property(x => x.UnitGram).HasPrecision(18, 3);
             builder.Property(x => x.Note).HasMaxLength(500);
 
             builder.HasOne(x => x.NetOperation)
@@ -28,7 +26,6 @@ namespace aqua_api.Data.Configurations
                 .HasForeignKey(x => x.FishBatchId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasCheckConstraint("CK_RII_NetOperationLine_Quantity", "[Quantity] > 0");
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }

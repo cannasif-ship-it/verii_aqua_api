@@ -9,8 +9,6 @@ namespace aqua_api.DTOs
         public long NetOperationId { get; set; }
         public long ProjectCageId { get; set; }
         public long? FishBatchId { get; set; }
-        public decimal Quantity { get; set; }
-        public decimal? UnitGram { get; set; }
         public string? Note { get; set; }
     }
 
@@ -19,8 +17,6 @@ namespace aqua_api.DTOs
         public long NetOperationId { get; set; }
         public long ProjectCageId { get; set; }
         public long? FishBatchId { get; set; }
-        public decimal Quantity { get; set; }
-        public decimal? UnitGram { get; set; }
         public string? Note { get; set; }
     }
 

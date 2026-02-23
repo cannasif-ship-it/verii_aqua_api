@@ -13,20 +13,17 @@ namespace aqua_api.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly INetOperationRepository _netOperationRepository;
-        private readonly IBalanceLedgerManager _balanceLedgerManager;
         private readonly IMapper _mapper;
         private readonly ILocalizationService _localizationService;
 
         public NetOperationService(
             IUnitOfWork unitOfWork,
             INetOperationRepository netOperationRepository,
-            IBalanceLedgerManager balanceLedgerManager,
             IMapper mapper,
             ILocalizationService localizationService)
         {
             _unitOfWork = unitOfWork;
             _netOperationRepository = netOperationRepository;
-            _balanceLedgerManager = balanceLedgerManager;
             _mapper = mapper;
             _localizationService = localizationService;
         }
@@ -196,28 +193,7 @@ namespace aqua_api.Services
 
                 EnsureDraftStatus(operation.Status, nameof(NetOperation));
 
-                foreach (var line in operation.Lines.Where(x => !x.IsDeleted && x.FishBatchId.HasValue))
-                {
-                    var signedBiomass = Math.Round(line.Quantity * (line.UnitGram ?? 0m), 3, MidpointRounding.AwayFromZero);
-
-                    await _balanceLedgerManager.ApplyDelta(
-                        operation.ProjectId,
-                        line.FishBatchId!.Value,
-                        line.ProjectCageId,
-                        0,
-                        signedBiomass,
-                        BatchMovementType.Adjustment,
-                        operation.OperationDate,
-                        "Net operation adjustment",
-                        "RII_NetOperation",
-                        operation.Id,
-                        line.ProjectCageId,
-                        line.ProjectCageId,
-                        null,
-                        null,
-                        null,
-                        null);
-                }
+                // Net operation no longer changes fish count/biomass directly.
 
                 operation.Status = DocumentStatus.Posted;
                 operation.UpdatedBy = userId;

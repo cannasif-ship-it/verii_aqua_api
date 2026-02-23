@@ -105,12 +105,39 @@ namespace aqua_api.Services
         {
             try
             {
+                var weatherDate = dto.WeatherDate.Date;
+                var alreadyExists = await _unitOfWork.DailyWeathers
+                    .Query()
+                    .AnyAsync(x => !x.IsDeleted
+                        && x.ProjectId == dto.ProjectId
+                        && x.WeatherDate.Date == weatherDate);
+
+                if (alreadyExists)
+                {
+                    throw new InvalidOperationException("Bu proje için bu tarihte hava durumu kaydı zaten mevcut.");
+                }
+
                 var entity = _mapper.Map<DailyWeather>(dto);
                 await _unitOfWork.DailyWeathers.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<DailyWeatherDto>(entity);
                 return ApiResponse<DailyWeatherDto>.SuccessResult(result, _localizationService.GetLocalizedString("DailyWeatherService.OperationSuccessful"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return ApiResponse<DailyWeatherDto>.ErrorResult(
+                    ex.Message,
+                    ex.Message,
+                    StatusCodes.Status400BadRequest);
+            }
+            catch (DbUpdateException ex)
+            {
+                var businessMessage = MapDbError(ex);
+                return ApiResponse<DailyWeatherDto>.ErrorResult(
+                    businessMessage,
+                    businessMessage,
+                    StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -142,6 +169,14 @@ namespace aqua_api.Services
 
                 var result = _mapper.Map<DailyWeatherDto>(entity);
                 return ApiResponse<DailyWeatherDto>.SuccessResult(result, _localizationService.GetLocalizedString("DailyWeatherService.OperationSuccessful"));
+            }
+            catch (DbUpdateException ex)
+            {
+                var businessMessage = MapDbError(ex);
+                return ApiResponse<DailyWeatherDto>.ErrorResult(
+                    businessMessage,
+                    businessMessage,
+                    StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -219,6 +254,32 @@ namespace aqua_api.Services
                     ex.Message,
                     StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private static string MapDbError(DbUpdateException ex)
+        {
+            var message = ex.InnerException?.Message ?? ex.Message;
+            if (message.Contains("UX_RII_DailyWeather_ProjectDate_Active", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Bu proje için bu tarihte hava durumu kaydı zaten mevcut.";
+            }
+
+            if (message.Contains("FK_RII_DailyWeather_Project", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Geçersiz proje seçtiniz.";
+            }
+
+            if (message.Contains("FK_RII_DailyWeather_WeatherType", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Geçersiz hava tipi seçtiniz.";
+            }
+
+            if (message.Contains("FK_RII_DailyWeather_WeatherSeverity", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Geçersiz hava şiddeti seçtiniz.";
+            }
+
+            return "Hava durumu kaydı kaydedilirken hata oluştu.";
         }
     }
 }

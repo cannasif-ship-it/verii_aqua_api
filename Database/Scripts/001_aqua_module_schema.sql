@@ -690,8 +690,6 @@ CREATE TABLE dbo.RII_NetOperationLine (
     NetOperationId bigint NOT NULL,
     ProjectCageId bigint NOT NULL,
     FishBatchId bigint NULL,
-    Quantity decimal(18,3) NOT NULL,
-    UnitGram decimal(18,3) NULL,
     Note nvarchar(500) NULL,
     CreatedBy bigint NULL,
     CreatedDate datetime2(3) NOT NULL CONSTRAINT DF_RII_NetOperationLine_CreatedDate DEFAULT (sysutcdatetime()),
@@ -703,8 +701,7 @@ CREATE TABLE dbo.RII_NetOperationLine (
     CONSTRAINT PK_RII_NetOperationLine PRIMARY KEY CLUSTERED (Id),
     CONSTRAINT FK_RII_NetOperationLine_Header FOREIGN KEY(NetOperationId) REFERENCES dbo.RII_NetOperation(Id),
     CONSTRAINT FK_RII_NetOperationLine_ProjectCage FOREIGN KEY(ProjectCageId) REFERENCES dbo.RII_ProjectCage(Id),
-    CONSTRAINT FK_RII_NetOperationLine_Batch FOREIGN KEY(FishBatchId) REFERENCES dbo.RII_FishBatch(Id),
-    CONSTRAINT CK_RII_NetOperationLine_Quantity CHECK (Quantity > 0)
+    CONSTRAINT FK_RII_NetOperationLine_Batch FOREIGN KEY(FishBatchId) REFERENCES dbo.RII_FishBatch(Id)
 );
 GO
 
