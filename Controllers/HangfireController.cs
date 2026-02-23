@@ -3,6 +3,7 @@ using Hangfire;
 using Hangfire.Storage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Infrastructure.BackgroundJobs.Interfaces;
 
 namespace aqua_api.Controllers
 {
@@ -12,10 +13,12 @@ namespace aqua_api.Controllers
     public class HangfireController : ControllerBase
     {
         private readonly IMonitoringApi _monitoringApi;
+        private readonly IBackgroundJobClient _backgroundJobClient;
 
-        public HangfireController()
+        public HangfireController(IBackgroundJobClient backgroundJobClient)
         {
             _monitoringApi = JobStorage.Current.GetMonitoringApi();
+            _backgroundJobClient = backgroundJobClient;
         }
 
         [HttpGet("stats")]
@@ -76,6 +79,18 @@ namespace aqua_api.Controllers
                 Queue = "dead-letter",
                 Enqueued = queue?.Length ?? 0,
                 Items = jobs,
+                Timestamp = DateTime.UtcNow
+            });
+        }
+
+        [HttpPost("stock-sync/run-now")]
+        public IActionResult RunStockSyncNow()
+        {
+            var jobId = _backgroundJobClient.Enqueue<IStockSyncJob>(job => job.ExecuteAsync());
+            return Ok(new
+            {
+                Message = "Stock sync job enqueued.",
+                JobId = jobId,
                 Timestamp = DateTime.UtcNow
             });
         }

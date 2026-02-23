@@ -622,7 +622,12 @@ app.UseHangfireDashboard("/hangfire", new DashboardOptions
 });
 
 // Register Recurring Jobs
-if (!app.Environment.IsDevelopment())
+// Development ortaminda varsayilan olarak kapali kalir.
+// Test icin appsettings.Local.json -> Hangfire:StockSync:EnableInDevelopment = true yapilabilir.
+var enableStockSyncInDevelopment = app.Configuration.GetValue<bool>("Hangfire:StockSync:EnableInDevelopment");
+var shouldRunRecurringStockSync = !app.Environment.IsDevelopment() || enableStockSyncInDevelopment;
+
+if (shouldRunRecurringStockSync)
 {
     RecurringJob.AddOrUpdate<IStockSyncJob>(
         "erp-stock-sync-job",
@@ -632,7 +637,7 @@ if (!app.Environment.IsDevelopment())
 else
 {
     RecurringJob.RemoveIfExists("erp-stock-sync-job");
-    app.Logger.LogInformation("Skipping recurring ERP sync jobs in Development environment.");
+    app.Logger.LogInformation("Skipping recurring ERP sync jobs in Development environment. Set Hangfire:StockSync:EnableInDevelopment=true to enable.");
 }
 
 app.Run();
