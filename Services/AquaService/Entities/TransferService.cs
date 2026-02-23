@@ -196,10 +196,12 @@ namespace aqua_api.Services
                 if (!transfer.Lines.Any(x => !x.IsDeleted))
                     throw new InvalidOperationException("Transfer must contain lines.");
 
+                var sourceProjectCageIds = new HashSet<long>();
                 foreach (var line in transfer.Lines.Where(x => !x.IsDeleted))
                 {
                     if (line.FromProjectCageId == line.ToProjectCageId)
                         throw new InvalidOperationException("From and To cage cannot be same.");
+                    sourceProjectCageIds.Add(line.FromProjectCageId);
 
                     await _balanceLedgerManager.ApplyDelta(
                         transfer.ProjectId,
@@ -236,6 +238,30 @@ namespace aqua_api.Services
                         null,
                         line.AverageGram,
                         line.AverageGram);
+                }
+
+                if (sourceProjectCageIds.Count > 0)
+                {
+                    var sourceCages = await _unitOfWork.Db.ProjectCages
+                        .Where(x => sourceProjectCageIds.Contains(x.Id) && !x.IsDeleted && x.ReleasedDate == null)
+                        .ToListAsync();
+
+                    foreach (var sourceCage in sourceCages)
+                    {
+                        var hasLiveBalance = await _unitOfWork.Db.BatchCageBalances
+                            .AnyAsync(x => x.ProjectCageId == sourceCage.Id && !x.IsDeleted && x.LiveCount > 0);
+                        if (hasLiveBalance)
+                        {
+                            continue;
+                        }
+
+                        var releaseDate = transfer.TransferDate.Date < sourceCage.AssignedDate.Date
+                            ? sourceCage.AssignedDate.Date
+                            : transfer.TransferDate.Date;
+                        sourceCage.ReleasedDate = releaseDate;
+                        sourceCage.UpdatedBy = userId;
+                        sourceCage.UpdatedDate = DateTimeProvider.UtcNow;
+                    }
                 }
 
                 transfer.Status = DocumentStatus.Posted;

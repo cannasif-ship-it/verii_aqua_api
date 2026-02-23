@@ -11,12 +11,18 @@ namespace aqua_api.Services
     public class StockConvertLineService : IStockConvertLineService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IStockConvertService _stockConvertService;
         private readonly IMapper _mapper;
         private readonly ILocalizationService _localizationService;
 
-        public StockConvertLineService(IUnitOfWork unitOfWork, IMapper mapper, ILocalizationService localizationService)
+        public StockConvertLineService(
+            IUnitOfWork unitOfWork,
+            IStockConvertService stockConvertService,
+            IMapper mapper,
+            ILocalizationService localizationService)
         {
             _unitOfWork = unitOfWork;
+            _stockConvertService = stockConvertService;
             _mapper = mapper;
             _localizationService = localizationService;
         }
@@ -100,6 +106,22 @@ namespace aqua_api.Services
                 var entity = _mapper.Map<StockConvertLine>(dto);
                 await _unitOfWork.StockConvertLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
+
+                var stockConvert = await _unitOfWork.StockConverts
+                    .Query()
+                    .FirstOrDefaultAsync(x => x.Id == entity.StockConvertId && !x.IsDeleted);
+                if (stockConvert != null && stockConvert.Status == DocumentStatus.Draft)
+                {
+                    var userId = entity.CreatedBy ?? stockConvert.CreatedBy ?? 1L;
+                    var postResult = await _stockConvertService.Post(stockConvert.Id, userId);
+                    if (!postResult.Success)
+                    {
+                        return ApiResponse<StockConvertLineDto>.ErrorResult(
+                            postResult.Message,
+                            postResult.ExceptionMessage,
+                            postResult.StatusCode);
+                    }
+                }
 
                 var result = _mapper.Map<StockConvertLineDto>(entity);
                 return ApiResponse<StockConvertLineDto>.SuccessResult(result, _localizationService.GetLocalizedString("StockConvertLineService.OperationSuccessful"));

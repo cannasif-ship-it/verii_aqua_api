@@ -11,12 +11,18 @@ namespace aqua_api.Services
     public class NetOperationLineService : INetOperationLineService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly INetOperationService _netOperationService;
         private readonly IMapper _mapper;
         private readonly ILocalizationService _localizationService;
 
-        public NetOperationLineService(IUnitOfWork unitOfWork, IMapper mapper, ILocalizationService localizationService)
+        public NetOperationLineService(
+            IUnitOfWork unitOfWork,
+            INetOperationService netOperationService,
+            IMapper mapper,
+            ILocalizationService localizationService)
         {
             _unitOfWork = unitOfWork;
+            _netOperationService = netOperationService;
             _mapper = mapper;
             _localizationService = localizationService;
         }
@@ -100,6 +106,22 @@ namespace aqua_api.Services
                 var entity = _mapper.Map<NetOperationLine>(dto);
                 await _unitOfWork.NetOperationLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
+
+                var netOperation = await _unitOfWork.NetOperations
+                    .Query()
+                    .FirstOrDefaultAsync(x => x.Id == entity.NetOperationId && !x.IsDeleted);
+                if (netOperation != null && netOperation.Status == DocumentStatus.Draft)
+                {
+                    var userId = entity.CreatedBy ?? netOperation.CreatedBy ?? 1L;
+                    var postResult = await _netOperationService.Post(netOperation.Id, userId);
+                    if (!postResult.Success)
+                    {
+                        return ApiResponse<NetOperationLineDto>.ErrorResult(
+                            postResult.Message,
+                            postResult.ExceptionMessage,
+                            postResult.StatusCode);
+                    }
+                }
 
                 var result = _mapper.Map<NetOperationLineDto>(entity);
                 return ApiResponse<NetOperationLineDto>.SuccessResult(result, _localizationService.GetLocalizedString("NetOperationLineService.OperationSuccessful"));

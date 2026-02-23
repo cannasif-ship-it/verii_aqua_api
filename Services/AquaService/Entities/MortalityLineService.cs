@@ -11,12 +11,18 @@ namespace aqua_api.Services
     public class MortalityLineService : IMortalityLineService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMortalityService _mortalityService;
         private readonly IMapper _mapper;
         private readonly ILocalizationService _localizationService;
 
-        public MortalityLineService(IUnitOfWork unitOfWork, IMapper mapper, ILocalizationService localizationService)
+        public MortalityLineService(
+            IUnitOfWork unitOfWork,
+            IMortalityService mortalityService,
+            IMapper mapper,
+            ILocalizationService localizationService)
         {
             _unitOfWork = unitOfWork;
+            _mortalityService = mortalityService;
             _mapper = mapper;
             _localizationService = localizationService;
         }
@@ -100,6 +106,22 @@ namespace aqua_api.Services
                 var entity = _mapper.Map<MortalityLine>(dto);
                 await _unitOfWork.MortalityLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
+
+                var mortality = await _unitOfWork.Mortalities
+                    .Query()
+                    .FirstOrDefaultAsync(x => x.Id == entity.MortalityId && !x.IsDeleted);
+                if (mortality != null && mortality.Status == DocumentStatus.Draft)
+                {
+                    var userId = entity.CreatedBy ?? mortality.CreatedBy ?? 1L;
+                    var postResult = await _mortalityService.Post(mortality.Id, userId);
+                    if (!postResult.Success)
+                    {
+                        return ApiResponse<MortalityLineDto>.ErrorResult(
+                            postResult.Message,
+                            postResult.ExceptionMessage,
+                            postResult.StatusCode);
+                    }
+                }
 
                 var result = _mapper.Map<MortalityLineDto>(entity);
                 return ApiResponse<MortalityLineDto>.SuccessResult(result, _localizationService.GetLocalizedString("MortalityLineService.OperationSuccessful"));

@@ -97,12 +97,46 @@ namespace aqua_api.Services
         {
             try
             {
+                if (dto.QtyUnit <= 0)
+                {
+                    throw new InvalidOperationException("Miktar 0'dan büyük olmalıdır.");
+                }
+
+                dto.FeedingId = await EnsureFeedingIdAsync(dto);
+
+                if (dto.GramPerUnit <= 0)
+                {
+                    dto.GramPerUnit = dto.TotalGram > 0
+                        ? Math.Round(dto.TotalGram / dto.QtyUnit, 3, MidpointRounding.AwayFromZero)
+                        : 1;
+                }
+
+                if (dto.TotalGram <= 0)
+                {
+                    dto.TotalGram = Math.Round(dto.QtyUnit * dto.GramPerUnit, 3, MidpointRounding.AwayFromZero);
+                }
+
                 var entity = _mapper.Map<FeedingLine>(dto);
                 await _unitOfWork.FeedingLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
                 var result = _mapper.Map<FeedingLineDto>(entity);
                 return ApiResponse<FeedingLineDto>.SuccessResult(result, _localizationService.GetLocalizedString("FeedingLineService.OperationSuccessful"));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return ApiResponse<FeedingLineDto>.ErrorResult(
+                    ex.Message,
+                    ex.Message,
+                    StatusCodes.Status400BadRequest);
+            }
+            catch (DbUpdateException ex)
+            {
+                var businessMessage = MapDbError(ex);
+                return ApiResponse<FeedingLineDto>.ErrorResult(
+                    businessMessage,
+                    businessMessage,
+                    StatusCodes.Status400BadRequest);
             }
             catch (Exception ex)
             {
@@ -169,6 +203,83 @@ namespace aqua_api.Services
                     ex.Message,
                     StatusCodes.Status500InternalServerError);
             }
+        }
+
+        private async Task<long> EnsureFeedingIdAsync(CreateFeedingLineDto dto)
+        {
+            if (dto.FeedingId > 0)
+            {
+                var current = await _unitOfWork.Feedings
+                    .Query()
+                    .FirstOrDefaultAsync(x => x.Id == dto.FeedingId && !x.IsDeleted);
+
+                if (current != null)
+                {
+                    return current.Id;
+                }
+            }
+
+            if (!dto.ProjectId.HasValue || dto.ProjectId.Value <= 0)
+            {
+                throw new InvalidOperationException("Besleme başlığı bulunamadı. Lütfen proje seçerek tekrar deneyin.");
+            }
+
+            var targetDate = (dto.FeedingDate ?? DateTime.UtcNow).Date;
+
+            var existingHeader = await _unitOfWork.Feedings
+                .Query()
+                .Where(x => !x.IsDeleted
+                    && x.ProjectId == dto.ProjectId.Value
+                    && x.FeedingDate.Date == targetDate
+                    && x.Status != DocumentStatus.Cancelled)
+                .OrderByDescending(x => x.CreatedDate)
+                .FirstOrDefaultAsync();
+
+            if (existingHeader != null)
+            {
+                return existingHeader.Id;
+            }
+
+            var generatedFeedingNo = string.IsNullOrWhiteSpace(dto.FeedingNo)
+                ? $"FD-{dto.ProjectId.Value}-{targetDate:yyyyMMdd}-{Guid.NewGuid():N}"[..32]
+                : dto.FeedingNo.Trim();
+
+            var newHeader = new Feeding
+            {
+                ProjectId = dto.ProjectId.Value,
+                FeedingNo = generatedFeedingNo,
+                FeedingDate = targetDate,
+                FeedingSlot = dto.FeedingSlot ?? FeedingSlot.Morning,
+                SourceType = dto.SourceType ?? FeedingSourceType.Manual,
+                Status = dto.Status ?? DocumentStatus.Posted,
+                Note = dto.Note
+            };
+
+            await _unitOfWork.Feedings.AddAsync(newHeader);
+            await _unitOfWork.SaveChangesAsync();
+
+            return newHeader.Id;
+        }
+
+        private static string MapDbError(DbUpdateException ex)
+        {
+            var message = ex.InnerException?.Message ?? ex.Message;
+            if (message.Contains("CK_RII_FeedingLine_Positive", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Besleme satırında miktar, birim gram ve toplam gram 0'dan büyük olmalıdır.";
+            }
+
+            if (message.Contains("FK_RII_FeedingLine_Feeding", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Besleme başlığı bulunamadı. Bugün için proje bazlı yeni başlık oluşturmayı tekrar deneyin.";
+            }
+
+            if (message.Contains("FK_RII_FeedingLine_Stock", StringComparison.OrdinalIgnoreCase))
+            {
+                return "Geçersiz stok seçtiniz.";
+            }
+
+            return "Besleme satırı kaydedilirken hata oluştu.";
         }
     }
 }

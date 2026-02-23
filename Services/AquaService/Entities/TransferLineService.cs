@@ -11,12 +11,18 @@ namespace aqua_api.Services
     public class TransferLineService : ITransferLineService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ITransferService _transferService;
         private readonly IMapper _mapper;
         private readonly ILocalizationService _localizationService;
 
-        public TransferLineService(IUnitOfWork unitOfWork, IMapper mapper, ILocalizationService localizationService)
+        public TransferLineService(
+            IUnitOfWork unitOfWork,
+            ITransferService transferService,
+            IMapper mapper,
+            ILocalizationService localizationService)
         {
             _unitOfWork = unitOfWork;
+            _transferService = transferService;
             _mapper = mapper;
             _localizationService = localizationService;
         }
@@ -100,6 +106,22 @@ namespace aqua_api.Services
                 var entity = _mapper.Map<TransferLine>(dto);
                 await _unitOfWork.TransferLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
+
+                var transfer = await _unitOfWork.Transfers
+                    .Query()
+                    .FirstOrDefaultAsync(x => x.Id == entity.TransferId && !x.IsDeleted);
+                if (transfer != null && transfer.Status == DocumentStatus.Draft)
+                {
+                    var userId = entity.CreatedBy ?? transfer.CreatedBy ?? 1L;
+                    var postResult = await _transferService.Post(transfer.Id, userId);
+                    if (!postResult.Success)
+                    {
+                        return ApiResponse<TransferLineDto>.ErrorResult(
+                            postResult.Message,
+                            postResult.ExceptionMessage,
+                            postResult.StatusCode);
+                    }
+                }
 
                 var result = _mapper.Map<TransferLineDto>(entity);
                 return ApiResponse<TransferLineDto>.SuccessResult(result, _localizationService.GetLocalizedString("TransferLineService.OperationSuccessful"));
