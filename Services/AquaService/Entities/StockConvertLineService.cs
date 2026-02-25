@@ -103,6 +103,14 @@ namespace aqua_api.Services
         {
             try
             {
+                if (dto.NewAverageGram <= 0)
+                {
+                    return ApiResponse<StockConvertLineDto>.ErrorResult(
+                        _localizationService.GetLocalizedString("StockConvertLineService.BusinessRuleError"),
+                        "NewAverageGram must be greater than 0.",
+                        StatusCodes.Status400BadRequest);
+                }
+
                 var entity = _mapper.Map<StockConvertLine>(dto);
                 await _unitOfWork.StockConvertLines.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
@@ -139,6 +147,14 @@ namespace aqua_api.Services
         {
             try
             {
+                if (dto.NewAverageGram <= 0)
+                {
+                    return ApiResponse<StockConvertLineDto>.ErrorResult(
+                        _localizationService.GetLocalizedString("StockConvertLineService.BusinessRuleError"),
+                        "NewAverageGram must be greater than 0.",
+                        StatusCodes.Status400BadRequest);
+                }
+
                 var repo = _unitOfWork.StockConvertLines;
                 var entity = await repo.GetByIdForUpdateAsync(id);
 

@@ -10,6 +10,7 @@ namespace aqua_api.Data.Configurations
         {
             builder.ToTable("RII_StockConvertLine");
             builder.Property(x => x.AverageGram).HasPrecision(18, 3);
+            builder.Property(x => x.NewAverageGram).HasPrecision(18, 3);
             builder.Property(x => x.BiomassGram).HasPrecision(18, 3);
 
             builder.HasOne(x => x.StockConvert)
@@ -37,7 +38,8 @@ namespace aqua_api.Data.Configurations
                 .HasForeignKey(x => x.ToProjectCageId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasCheckConstraint("CK_RII_StockConvertLine_Positive", "[FishCount] > 0 AND [AverageGram] > 0 AND [BiomassGram] > 0");
+            // Legacy rows may not have increment gram; allow zero for historical compatibility.
+            builder.HasCheckConstraint("CK_RII_StockConvertLine_Positive", "[FishCount] > 0 AND [AverageGram] > 0 AND [NewAverageGram] >= 0 AND [BiomassGram] > 0");
             builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }

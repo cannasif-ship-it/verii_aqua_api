@@ -201,15 +201,22 @@ namespace aqua_api.Services
 
                     var fromStockId = fromBatch.FishStockId;
                     long? toStockId = line.ToFishBatch?.FishStockId;
-
-                    fromBatch.FishStockId = line.ToFishBatch?.FishStockId ?? fromBatch.FishStockId;
+                    var fromAverageGram = line.AverageGram;
+                    if (line.NewAverageGram <= 0)
+                    {
+                        throw new InvalidOperationException("Gram increment must be greater than 0.");
+                    }
+                    // NewAverageGram is treated as increment gram entered by user.
+                    var toAverageGram = BatchMath.CalculateIncrementedAverageGram(fromAverageGram, line.NewAverageGram);
+                    var fromBiomassGram = line.BiomassGram;
+                    var toBiomassGram = BatchMath.CalculateBiomassGram(line.FishCount, toAverageGram);
 
                     await _balanceLedgerManager.ApplyDelta(
                         convert.ProjectId,
                         line.FromFishBatchId,
                         line.FromProjectCageId,
                         -line.FishCount,
-                        -line.BiomassGram,
+                        -fromBiomassGram,
                         BatchMovementType.StockConvert,
                         convert.ConvertDate,
                         "Stock convert out",
@@ -219,15 +226,16 @@ namespace aqua_api.Services
                         line.ToProjectCageId,
                         fromStockId,
                         toStockId,
-                        line.AverageGram,
-                        line.AverageGram);
+                        fromAverageGram,
+                        toAverageGram,
+                        userId);
 
                     await _balanceLedgerManager.ApplyDelta(
                         convert.ProjectId,
                         line.ToFishBatchId,
                         line.ToProjectCageId,
                         line.FishCount,
-                        line.BiomassGram,
+                        toBiomassGram,
                         BatchMovementType.StockConvert,
                         convert.ConvertDate,
                         "Stock convert in",
@@ -237,8 +245,9 @@ namespace aqua_api.Services
                         line.ToProjectCageId,
                         fromStockId,
                         toStockId,
-                        line.AverageGram,
-                        line.AverageGram);
+                        fromAverageGram,
+                        toAverageGram,
+                        userId);
                 }
 
                 convert.Status = DocumentStatus.Posted;

@@ -13,6 +13,7 @@ namespace aqua_api.DTOs
         public long ToProjectCageId { get; set; }
         public int FishCount { get; set; }
         public decimal AverageGram { get; set; }
+        public decimal NewAverageGram { get; set; }
         public decimal BiomassGram { get; set; }
     }
 
@@ -25,6 +26,7 @@ namespace aqua_api.DTOs
         public long ToProjectCageId { get; set; }
         public int FishCount { get; set; }
         public decimal AverageGram { get; set; }
+        public decimal NewAverageGram { get; set; }
         public decimal BiomassGram { get; set; }
     }
 
