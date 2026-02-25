@@ -44,6 +44,8 @@ namespace aqua_api.Data
         public DbSet<MortalityLine> MortalityLines { get; set; }
         public DbSet<Transfer> Transfers { get; set; }
         public DbSet<TransferLine> TransferLines { get; set; }
+        public DbSet<Shipment> Shipments { get; set; }
+        public DbSet<ShipmentLine> ShipmentLines { get; set; }
         public DbSet<Weighing> Weighings { get; set; }
         public DbSet<WeighingLine> WeighingLines { get; set; }
         public DbSet<StockConvert> StockConverts { get; set; }

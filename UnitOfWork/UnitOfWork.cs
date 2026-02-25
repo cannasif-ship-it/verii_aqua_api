@@ -49,6 +49,8 @@ namespace aqua_api.UnitOfWork
         private IGenericRepository<MortalityLine>? _mortalityLines;
         private IGenericRepository<Transfer>? _transfers;
         private IGenericRepository<TransferLine>? _transferLines;
+        private IGenericRepository<Shipment>? _shipments;
+        private IGenericRepository<ShipmentLine>? _shipmentLines;
         private IGenericRepository<Weighing>? _weighings;
         private IGenericRepository<WeighingLine>? _weighingLines;
         private IGenericRepository<StockConvert>? _stockConverts;
@@ -103,6 +105,8 @@ namespace aqua_api.UnitOfWork
         public IGenericRepository<MortalityLine> MortalityLines => _mortalityLines ??= new GenericRepository<MortalityLine>(_context, _httpContextAccessor);
         public IGenericRepository<Transfer> Transfers => _transfers ??= new GenericRepository<Transfer>(_context, _httpContextAccessor);
         public IGenericRepository<TransferLine> TransferLines => _transferLines ??= new GenericRepository<TransferLine>(_context, _httpContextAccessor);
+        public IGenericRepository<Shipment> Shipments => _shipments ??= new GenericRepository<Shipment>(_context, _httpContextAccessor);
+        public IGenericRepository<ShipmentLine> ShipmentLines => _shipmentLines ??= new GenericRepository<ShipmentLine>(_context, _httpContextAccessor);
         public IGenericRepository<Weighing> Weighings => _weighings ??= new GenericRepository<Weighing>(_context, _httpContextAccessor);
         public IGenericRepository<WeighingLine> WeighingLines => _weighingLines ??= new GenericRepository<WeighingLine>(_context, _httpContextAccessor);
         public IGenericRepository<StockConvert> StockConverts => _stockConverts ??= new GenericRepository<StockConvert>(_context, _httpContextAccessor);

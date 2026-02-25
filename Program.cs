@@ -135,6 +135,7 @@ builder.Services.AddScoped<IWeighingRepository, WeighingRepository>();
 builder.Services.AddScoped<IStockConvertRepository, StockConvertRepository>();
 builder.Services.AddScoped<INetOperationRepository, NetOperationRepository>();
 builder.Services.AddScoped<IDailyWeatherRepository, DailyWeatherRepository>();
+builder.Services.AddScoped<IShipmentRepository, ShipmentRepository>();
 
 // Register Authentication & Authorization Services
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -184,6 +185,8 @@ builder.Services.AddScoped<IStockConvertService, StockConvertService>();
 builder.Services.AddScoped<IStockConvertLineService, StockConvertLineService>();
 builder.Services.AddScoped<ITransferService, TransferService>();
 builder.Services.AddScoped<ITransferLineService, TransferLineService>();
+builder.Services.AddScoped<IShipmentService, ShipmentService>();
+builder.Services.AddScoped<IShipmentLineService, ShipmentLineService>();
 builder.Services.AddScoped<IWeatherSeverityService, WeatherSeverityService>();
 builder.Services.AddScoped<IWeatherTypeService, WeatherTypeService>();
 builder.Services.AddScoped<IWeighingService, WeighingService>();

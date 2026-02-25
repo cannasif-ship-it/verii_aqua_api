@@ -22,6 +22,7 @@ namespace aqua_api.Models
         public ICollection<FeedingDistribution> FeedingDistributions { get; set; } = new List<FeedingDistribution>();
         public ICollection<MortalityLine> MortalityLines { get; set; } = new List<MortalityLine>();
         public ICollection<TransferLine> TransferLines { get; set; } = new List<TransferLine>();
+        public ICollection<ShipmentLine> ShipmentLines { get; set; } = new List<ShipmentLine>();
         public ICollection<WeighingLine> WeighingLines { get; set; } = new List<WeighingLine>();
         public ICollection<StockConvertLine> StockConvertFromLines { get; set; } = new List<StockConvertLine>();
         public ICollection<StockConvertLine> StockConvertToLines { get; set; } = new List<StockConvertLine>();

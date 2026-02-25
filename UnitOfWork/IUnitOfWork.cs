@@ -42,6 +42,8 @@ namespace aqua_api.UnitOfWork
         IGenericRepository<MortalityLine> MortalityLines { get; }
         IGenericRepository<Transfer> Transfers { get; }
         IGenericRepository<TransferLine> TransferLines { get; }
+        IGenericRepository<Shipment> Shipments { get; }
+        IGenericRepository<ShipmentLine> ShipmentLines { get; }
         IGenericRepository<Weighing> Weighings { get; }
         IGenericRepository<WeighingLine> WeighingLines { get; }
         IGenericRepository<StockConvert> StockConverts { get; }

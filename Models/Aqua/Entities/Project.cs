@@ -19,6 +19,7 @@ namespace aqua_api.Models
         public ICollection<Feeding> Feedings { get; set; } = new List<Feeding>();
         public ICollection<Mortality> Mortalities { get; set; } = new List<Mortality>();
         public ICollection<Transfer> Transfers { get; set; } = new List<Transfer>();
+        public ICollection<Shipment> Shipments { get; set; } = new List<Shipment>();
         public ICollection<Weighing> Weighings { get; set; } = new List<Weighing>();
         public ICollection<StockConvert> StockConverts { get; set; } = new List<StockConvert>();
         public ICollection<DailyWeather> DailyWeathers { get; set; } = new List<DailyWeather>();

@@ -20,7 +20,9 @@ namespace aqua_api.Models
         Weighing = 2,
         StockConvert = 3,
         Adjustment = 4,
-        Stocking = 5
+        Stocking = 5,
+        Shipment = 6,
+        Feeding = 7
     }
 
     public enum FeedingSlot : byte

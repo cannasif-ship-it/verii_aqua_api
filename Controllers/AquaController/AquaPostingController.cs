@@ -16,6 +16,7 @@ namespace aqua_api.Controllers.AquaController
         private readonly IMortalityService _mortalityService;
         private readonly IWeighingService _weighingService;
         private readonly IStockConvertService _stockConvertService;
+        private readonly IShipmentService _shipmentService;
         private readonly INetOperationService _netOperationService;
         private readonly IDailyWeatherService _dailyWeatherService;
 
@@ -25,6 +26,7 @@ namespace aqua_api.Controllers.AquaController
             IMortalityService mortalityService,
             IWeighingService weighingService,
             IStockConvertService stockConvertService,
+            IShipmentService shipmentService,
             INetOperationService netOperationService,
             IDailyWeatherService dailyWeatherService)
         {
@@ -33,6 +35,7 @@ namespace aqua_api.Controllers.AquaController
             _mortalityService = mortalityService;
             _weighingService = weighingService;
             _stockConvertService = stockConvertService;
+            _shipmentService = shipmentService;
             _netOperationService = netOperationService;
             _dailyWeatherService = dailyWeatherService;
         }
@@ -41,11 +44,6 @@ namespace aqua_api.Controllers.AquaController
         public async Task<IActionResult> PostGoodsReceipt(long id)
         {
             var result = await _goodsReceiptService.PostAsync(id, GetUserId());
-            if (!result.Success)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
             return StatusCode(result.StatusCode, result);
         }
 
@@ -53,11 +51,6 @@ namespace aqua_api.Controllers.AquaController
         public async Task<IActionResult> PostTransfer(long id)
         {
             var result = await _transferService.Post(id, GetUserId());
-            if (!result.Success)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
             return StatusCode(result.StatusCode, result);
         }
 
@@ -65,11 +58,6 @@ namespace aqua_api.Controllers.AquaController
         public async Task<IActionResult> PostMortality(long id)
         {
             var result = await _mortalityService.Post(id, GetUserId());
-            if (!result.Success)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
             return StatusCode(result.StatusCode, result);
         }
 
@@ -77,11 +65,6 @@ namespace aqua_api.Controllers.AquaController
         public async Task<IActionResult> PostWeighing(long id)
         {
             var result = await _weighingService.Post(id, GetUserId());
-            if (!result.Success)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
             return StatusCode(result.StatusCode, result);
         }
 
@@ -89,11 +72,13 @@ namespace aqua_api.Controllers.AquaController
         public async Task<IActionResult> PostStockConvert(long id)
         {
             var result = await _stockConvertService.Post(id, GetUserId());
-            if (!result.Success)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
+            return StatusCode(result.StatusCode, result);
+        }
 
+        [HttpPost("shipment/{id:long}")]
+        public async Task<IActionResult> PostShipment(long id)
+        {
+            var result = await _shipmentService.Post(id, GetUserId());
             return StatusCode(result.StatusCode, result);
         }
 
@@ -101,11 +86,6 @@ namespace aqua_api.Controllers.AquaController
         public async Task<IActionResult> PostNetOperation(long id)
         {
             var result = await _netOperationService.Post(id, GetUserId());
-            if (!result.Success)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
             return StatusCode(result.StatusCode, result);
         }
 
@@ -113,11 +93,6 @@ namespace aqua_api.Controllers.AquaController
         public async Task<IActionResult> CreateDailyWeather([FromBody] CreateDailyWeatherRequest request)
         {
             var result = await _dailyWeatherService.CreateDaily(request, GetUserId());
-            if (!result.Success)
-            {
-                return StatusCode(result.StatusCode, result.Message);
-            }
-
             return StatusCode(result.StatusCode, result);
         }
 
