@@ -101,6 +101,48 @@ namespace aqua_api.Services
                 await _unitOfWork.FeedingDistributions.AddAsync(entity);
                 await _unitOfWork.SaveChangesAsync();
 
+                var feedingLine = await _unitOfWork.FeedingLines
+                    .Query()
+                    .Include(x => x.Feeding)
+                    .FirstOrDefaultAsync(x => x.Id == entity.FeedingLineId && !x.IsDeleted);
+
+                if (feedingLine?.Feeding != null && feedingLine.Feeding.Status == DocumentStatus.Posted)
+                {
+                    var activeBalance = await _unitOfWork.Db.BatchCageBalances
+                        .Where(x => !x.IsDeleted
+                            && x.ProjectCageId == entity.ProjectCageId
+                            && x.LiveCount > 0)
+                        .OrderByDescending(x => x.LiveCount)
+                        .ThenByDescending(x => x.Id)
+                        .FirstOrDefaultAsync();
+
+                    if (activeBalance != null)
+                    {
+                        var actorUserId = entity.CreatedBy
+                            ?? feedingLine.CreatedBy
+                            ?? feedingLine.Feeding.CreatedBy
+                            ?? 1L;
+                        await _unitOfWork.Db.BatchMovements.AddAsync(new BatchMovement
+                        {
+                            FishBatchId = activeBalance.FishBatchId,
+                            ProjectCageId = entity.ProjectCageId,
+                            MovementDate = feedingLine.Feeding.FeedingDate,
+                            MovementType = BatchMovementType.Feeding,
+                            SignedCount = 0,
+                            SignedBiomassGram = 0,
+                            FeedGram = entity.FeedGram,
+                            ActorUserId = actorUserId,
+                            ReferenceTable = "RII_FeedingDistribution",
+                            ReferenceId = entity.Id,
+                            Note = $"FeedingDistribution | feedGram={entity.FeedGram}",
+                            CreatedBy = actorUserId,
+                            IsDeleted = false
+                        });
+
+                        await _unitOfWork.SaveChangesAsync();
+                    }
+                }
+
                 var result = _mapper.Map<FeedingDistributionDto>(entity);
                 return ApiResponse<FeedingDistributionDto>.SuccessResult(result, _localizationService.GetLocalizedString("FeedingDistributionService.OperationSuccessful"));
             }

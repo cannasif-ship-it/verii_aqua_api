@@ -20,6 +20,7 @@ namespace aqua_api.Interfaces
             long? fromStockId,
             long? toStockId,
             decimal? fromAvgGram,
-            decimal? toAvgGram);
+            decimal? toAvgGram,
+            long? actorUserId = null);
     }
 }

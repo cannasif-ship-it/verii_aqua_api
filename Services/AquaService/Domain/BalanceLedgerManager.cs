@@ -30,8 +30,16 @@ namespace aqua_api.Services
             long? fromStockId,
             long? toStockId,
             decimal? fromAvgGram,
-            decimal? toAvgGram)
+            decimal? toAvgGram,
+            long? actorUserId = null)
         {
+            var fishBatch = await _uow.Db.FishBatches
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == fishBatchId && !x.IsDeleted);
+
+            var resolvedFromStockId = fromStockId ?? fishBatch?.FishStockId;
+            var resolvedToStockId = toStockId ?? resolvedFromStockId;
+
             var balance = await _uow.Db.BatchCageBalances
                 .FirstOrDefaultAsync(x => x.FishBatchId == fishBatchId && x.ProjectCageId == projectCageId && !x.IsDeleted);
 
@@ -78,8 +86,8 @@ namespace aqua_api.Services
                 $"projectId={projectId}",
                 $"fromCage={fromCageId?.ToString() ?? "null"}",
                 $"toCage={toCageId?.ToString() ?? "null"}",
-                $"fromStock={fromStockId?.ToString() ?? "null"}",
-                $"toStock={toStockId?.ToString() ?? "null"}",
+                $"fromStock={resolvedFromStockId?.ToString() ?? "null"}",
+                $"toStock={resolvedToStockId?.ToString() ?? "null"}",
                 $"fromAvg={fromAvgGram?.ToString("0.###") ?? "null"}",
                 $"toAvg={toAvgGram?.ToString("0.###") ?? "null"}"
             };
@@ -88,13 +96,22 @@ namespace aqua_api.Services
             {
                 FishBatchId = fishBatchId,
                 ProjectCageId = projectCageId,
+                FromProjectCageId = fromCageId,
+                ToProjectCageId = toCageId,
+                FromStockId = resolvedFromStockId,
+                ToStockId = resolvedToStockId,
+                FromAverageGram = fromAvgGram,
+                ToAverageGram = toAvgGram,
                 MovementDate = movementDate,
                 MovementType = movementType,
                 SignedCount = deltaCount,
                 SignedBiomassGram = biomassDelta,
+                FeedGram = null,
+                ActorUserId = actorUserId,
                 ReferenceTable = refTable,
                 ReferenceId = refId,
                 Note = string.Join(" | ", noteParts),
+                CreatedBy = actorUserId,
                 IsDeleted = false
             });
         }

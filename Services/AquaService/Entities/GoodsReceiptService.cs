@@ -468,6 +468,8 @@ namespace aqua_api.Services
                 MovementType = movementType,
                 SignedCount = signedCount,
                 SignedBiomassGram = signedBiomassGram,
+                FeedGram = null,
+                ActorUserId = userId,
                 ReferenceTable = referenceTable,
                 ReferenceId = referenceId,
                 CreatedBy = userId,

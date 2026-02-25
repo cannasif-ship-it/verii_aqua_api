@@ -219,7 +219,8 @@ namespace aqua_api.Services
                         null,
                         null,
                         line.AverageGram,
-                        line.AverageGram);
+                        line.AverageGram,
+                        userId);
 
                     await _balanceLedgerManager.ApplyDelta(
                         transfer.ProjectId,
@@ -237,7 +238,8 @@ namespace aqua_api.Services
                         null,
                         null,
                         line.AverageGram,
-                        line.AverageGram);
+                        line.AverageGram,
+                        userId);
                 }
 
                 if (sourceProjectCageIds.Count > 0)

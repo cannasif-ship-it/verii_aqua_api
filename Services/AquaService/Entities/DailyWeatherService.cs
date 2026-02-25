@@ -236,6 +236,41 @@ namespace aqua_api.Services
                 await _dailyWeatherRepository.Add(entity);
                 await _unitOfWork.SaveChanges();
 
+                // Daily weather is not a fish delta operation; write zero-delta movement rows
+                // for active batch-cage balances so timeline queries can include weather days.
+                var activeBalances = await _unitOfWork.Db.BatchCageBalances
+                    .Where(x => !x.IsDeleted
+                        && x.LiveCount > 0
+                        && x.ProjectCage != null
+                        && !x.ProjectCage.IsDeleted
+                        && x.ProjectCage.ProjectId == request.ProjectId)
+                    .ToListAsync();
+
+                foreach (var balance in activeBalances)
+                {
+                    await _unitOfWork.Db.BatchMovements.AddAsync(new BatchMovement
+                    {
+                        FishBatchId = balance.FishBatchId,
+                        ProjectCageId = balance.ProjectCageId,
+                        MovementDate = request.Date.Date,
+                        MovementType = BatchMovementType.Adjustment,
+                        SignedCount = 0,
+                        SignedBiomassGram = 0,
+                        FeedGram = null,
+                        ActorUserId = userId,
+                        ReferenceTable = "RII_DailyWeather",
+                        ReferenceId = entity.Id,
+                        Note = $"DailyWeather | typeId={request.TypeId} | severityId={request.SeverityId}",
+                        CreatedBy = userId,
+                        IsDeleted = false
+                    });
+                }
+
+                if (activeBalances.Count > 0)
+                {
+                    await _unitOfWork.SaveChanges();
+                }
+
                 return ApiResponse<long>.SuccessResult(
                     entity.Id,
                     _localizationService.GetLocalizedString("DailyWeatherService.OperationSuccessful"));

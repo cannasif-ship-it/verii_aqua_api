@@ -218,7 +218,8 @@ namespace aqua_api.Services
                         null,
                         null,
                         fromAvgGram,
-                        line.MeasuredAverageGram);
+                        line.MeasuredAverageGram,
+                        userId);
                 }
 
                 weighing.Status = DocumentStatus.Posted;

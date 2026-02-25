@@ -194,6 +194,43 @@ namespace aqua_api.Services
                 EnsureDraftStatus(operation.Status, nameof(NetOperation));
 
                 // Net operation no longer changes fish count/biomass directly.
+                // Still write a zero-delta movement entry for full batch timeline traceability.
+                foreach (var line in operation.Lines.Where(x => !x.IsDeleted))
+                {
+                    var fishBatchId = line.FishBatchId;
+                    if (!fishBatchId.HasValue)
+                    {
+                        var activeBalance = await _unitOfWork.Db.BatchCageBalances
+                            .Where(x => !x.IsDeleted
+                                && x.ProjectCageId == line.ProjectCageId
+                                && x.LiveCount > 0)
+                            .OrderByDescending(x => x.LiveCount)
+                            .ThenByDescending(x => x.Id)
+                            .FirstOrDefaultAsync();
+
+                        fishBatchId = activeBalance?.FishBatchId;
+                    }
+
+                    if (!fishBatchId.HasValue)
+                        continue;
+
+                    await _unitOfWork.Db.BatchMovements.AddAsync(new BatchMovement
+                    {
+                        FishBatchId = fishBatchId.Value,
+                        ProjectCageId = line.ProjectCageId,
+                        MovementDate = operation.OperationDate,
+                        MovementType = BatchMovementType.Adjustment,
+                        SignedCount = 0,
+                        SignedBiomassGram = 0,
+                        FeedGram = null,
+                        ActorUserId = userId,
+                        ReferenceTable = "RII_NetOperationLine",
+                        ReferenceId = line.Id,
+                        Note = $"NetOperation | netOperationId={operation.Id} | type={operation.OperationTypeId}",
+                        CreatedBy = userId,
+                        IsDeleted = false
+                    });
+                }
 
                 operation.Status = DocumentStatus.Posted;
                 operation.UpdatedBy = userId;

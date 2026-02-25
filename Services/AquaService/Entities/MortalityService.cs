@@ -220,7 +220,8 @@ namespace aqua_api.Services
                         null,
                         null,
                         balance?.AverageGram,
-                        balance?.AverageGram);
+                        balance?.AverageGram,
+                        userId);
                 }
 
                 mortality.Status = DocumentStatus.Posted;
