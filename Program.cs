@@ -241,12 +241,8 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:5173",
-                "https://crm.v3rii.com",
-                "http://crm.v3rii.com",
-                "http://192.168.10.52",
-                "http://192.168.10.52:5173",
-                "http://cloud.windoform.com",
-                "https://cloud.windoform.com"
+                "https://aqua.v3rii.com",
+                "http://aqua.v3rii.com"
             )
             .AllowAnyMethod()
             .AllowAnyHeader()
